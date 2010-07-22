@@ -16,6 +16,15 @@ following anywhere in your page:
 
 [hungryfeed url="http://verysimple.com/feed/"]
 
+Features:
+
+* Uses WordPress Shortcodes for simple inclusion of feeds on any page or post
+* Has a variety of parameters to control the output and what RSS fields appear
+* Relies on WordPress built-in SimplePie for reading RSS
+* Fixes characters in URLs that may get mangled when editing in Visual mode
+* Caches feeds and allows configuration of the cache expiration
+* Outputs clean, stylable HTML and provides a configuration setting for adding style code
+
 == Installation ==
 
 1. Download hungryfeed.zip (or use the WordPress "Add New Plugin" feature)
