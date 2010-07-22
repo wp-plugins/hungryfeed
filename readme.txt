@@ -49,10 +49,13 @@ Documentation and support is available on the plugin homepage.
 
 == Upgrade Notice ==
 
-= 1.2.0 =
-Added two formatting option for enable/disable title link and formatting post date
+= 1.2.1 =
+Fix to directory structure to make plugin work with wordpress installer
 
 == Changelog ==
+
+= 1.2.1 =
+* Fix to directory structure to make plugin work with wordpress installer
 
 = 1.2.0 =
 * Added parameter item_link_title to enable/disable the post title link
