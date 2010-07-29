@@ -1,7 +1,7 @@
 === Plugin Name ===
 Contributors: verysimple
 Donate link: http://verysimple.com/products/hungryfeed/
-Tags: rss,feed,page,simplepie,inline rss,rss feed,feed reader,rss reader
+Tags: rss,feed,reader,feed reader,page,simplepie,inline rss,rss feed,feed reader,rss reader,inline feed reader, inline rss feed
 Requires at least: 2.7
 Tested up to: 3.0
 Stable tag: trunk
