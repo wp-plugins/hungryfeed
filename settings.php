@@ -18,6 +18,9 @@ function hungryfeed_register_settings() {
 	//register our settings
 	register_setting( 'hungryfeed-settings-group', 'hungryfeed_cache_duration' );
 	register_setting( 'hungryfeed-settings-group', 'hungryfeed_css' );
+	register_setting( 'hungryfeed-settings-group', 'hungryfeed_html_1' );
+	register_setting( 'hungryfeed-settings-group', 'hungryfeed_html_2' );
+	register_setting( 'hungryfeed-settings-group', 'hungryfeed_html_3' );
 }
 
 function hungryfeed_settings_page() {
@@ -97,7 +100,22 @@ hungryfeed_include_simplepie()
          
         <tr valign="top">
         <th scope="row">CSS Code</th>
-        <td><textarea name="hungryfeed_css" cols="25" rows="5" style="width: 400px; height: 200px;"><?php echo get_option('hungryfeed_css',HUNGRYFEED_DEFAULT_CSS); ?></textarea></td>
+        <td><textarea name="hungryfeed_css" cols="25" rows="5" style="width: 400px; height: 160px;"><?php echo get_option('hungryfeed_css',HUNGRYFEED_DEFAULT_CSS); ?></textarea></td>
+        </tr>
+
+        <tr valign="top">
+        <th scope="row">Custom Template 1</th>
+        <td><textarea name="hungryfeed_html_1" cols="25" rows="5" style="width: 400px; height: 160px;"><?php echo get_option('hungryfeed_html_1',HUNGRYFEED_DEFAULT_HTML); ?></textarea></td>
+        </tr>
+
+       <tr valign="top">
+        <th scope="row">Custom Template 2</th>
+        <td><textarea name="hungryfeed_html_2" cols="25" rows="5" style="width: 400px; height: 160px;"><?php echo get_option('hungryfeed_html_2',HUNGRYFEED_DEFAULT_HTML); ?></textarea></td>
+        </tr>
+
+       <tr valign="top">
+        <th scope="row">Custom Template 3</th>
+        <td><textarea name="hungryfeed_html_3" cols="25" rows="5" style="width: 400px; height: 160px;"><?php echo get_option('hungryfeed_html_3',HUNGRYFEED_DEFAULT_HTML); ?></textarea></td>
         </tr>
 
         <tr valign="top">
@@ -109,10 +127,7 @@ hungryfeed_include_simplepie()
         	<div>Scary monster logo designed by <a href="http://www.blog.spoongraphics.co.uk/">Chris Spooner</a></div>
         </td>
         </tr>
-        
-        
-        
-        
+
     </table>
     
     <p class="submit">

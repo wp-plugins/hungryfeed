@@ -24,6 +24,7 @@ following anywhere in your page:
 * Fixes characters in URLs that may get mangled when editing in Visual mode
 * Caches feeds and allows configuration of the cache expiration
 * Outputs clean, HTML for easy styling with a CSS configuration setting
+* Allows you to custom the HTML template used to display feeds
 
 == Installation ==
 
@@ -50,10 +51,13 @@ Documentation and support is available on the plugin homepage.
 
 == Upgrade Notice ==
 
-= 1.2.1 =
-Fix to directory structure to make plugin work with wordpress installer
+= 1.3.0 =
+Added custom template settings that can be used to fully customize the output of the feed
 
 == Changelog ==
+
+= 1.3.0 =
+* Added custom template settings that can be used to fully customize the output of the feed
 
 = 1.2.1 =
 * Fix to directory structure to make plugin work with wordpress installer

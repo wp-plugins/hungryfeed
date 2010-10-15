@@ -9,9 +9,10 @@ Author URI: http://verysimple.com/
 License: GPL2
 */
 
-define('HUNGRYFEED_VERSION','1.2.1');
+define('HUNGRYFEED_VERSION','1.3.0');
 define('HUNGRYFEED_DEFAULT_CACHE_DURATION',3600);
 define('HUNGRYFEED_DEFAULT_CSS',"h3.hungryfeed_feed_title {}\np.hungryfeed_feed_description {}\ndiv.hungryfeed_items {}\ndiv.hungryfeed_item {margin-bottom: 10px;}\ndiv.hungryfeed_item_title {font-weight: bold;}\ndiv.hungryfeed_item_description {}\ndiv.hungryfeed_item_author {}\ndiv.hungryfeed_item_date {}");
+define('HUNGRYFEED_DEFAULT_HTML',"<div class=\"hungryfeed_item\">\n<h3><a href=\"{{permalink}}\">{{title}}</a></h3>\n<div>{{description}}</div>\n<div>Author: {{author}}</div>\n<div>Posted: {{post_date}}</div>\n</div>");
 define('HUNGRYFEED_DEFAULT_CACHE_LOCATION',ABSPATH . 'wp-content/cache');
 define('HUNGRYFEED_DEFAULT_FEED_FIELDS','title,description');
 define('HUNGRYFEED_DEFAULT_ITEM_FIELDS','title,description,author,date');
@@ -42,6 +43,7 @@ function hungryfeed_display_rss($params)
 	$xml_dump = hungryfeed_val($params,'xml_dump','0');
 	$decode_url = hungryfeed_val($params,'decode_url','1');
 	$max_items = hungryfeed_val($params,'max_items',0);
+	$template_id = hungryfeed_val($params,'template',0);
 	$date_format = hungryfeed_val($params,'date_format',HUNGRYFEED_DEFAULT_DATE_FORMAT);
 	
 	$feed_fields = explode(",", hungryfeed_val($params,'feed_fields',HUNGRYFEED_DEFAULT_FEED_FIELDS));
@@ -74,7 +76,7 @@ function hungryfeed_display_rss($params)
 	
 	$feed->set_feed_url($url);
 	
-	// HACK: SimplePie adds this weird shit into eBay feeds
+	// @HACK: SimplePie adds this weird shit into eBay feeds
 	$feed->feed_url = str_replace("%23038;","",$feed->feed_url);
 	
 	if ($force_feed) $feed->force_feed(true);
@@ -110,23 +112,46 @@ function hungryfeed_display_rss($params)
 	echo "<div class=\"hungryfeed_items\">\n";
 	
 	$counter = 0;
+	$template_html = "";
+	
+	if ($template_id == "1" || $template_id == "2" || $template_id == "3")
+	{
+		$template_html = get_option('hungryfeed_html_'.$template_id,HUNGRYFEED_DEFAULT_HTML);
+	}
+	
 	foreach ($feed->get_items() as $item)
 	{
 		$counter++;
 		if ($max_items > 0 && $counter > $max_items) break;
 		
-		echo "<div class=\"hungryfeed_item\">\n";
-			if (in_array("title",$item_fields)) 
-				echo $link_item_title 
-					? '<div class="hungryfeed_item_title"><a href="' . $item->get_permalink() . '">' . $item->get_title() . "</a></div>\n"
-					: '<div class="hungryfeed_item_title">' . $item->get_title() . '</div>';
-			if (in_array("description",$item_fields)) 
-				echo '<div class="hungryfeed_item_description">' . $item->get_description() . "</div>\n";
-			if ($item->get_author()->name && in_array("author",$item_fields)) 
-				echo '<div class="hungryfeed_item_author">Author: ' . $item->get_author()->name . "</div>\n";
-			if ($item->get_date() && in_array("date",$item_fields)) 
-				echo '<div class="hungryfeed_item_date">Posted: ' . $item->get_date($date_format) . "</div>\n";
-		echo "</div>\n";
+		// either use a template, or the default layout
+		if ($template_html)
+		{
+			$rss_values = array(
+				'permalink' => $item->get_permalink(),
+				'title' => $item->get_title(),
+				'description' => $item->get_description(),
+				'author' => $item->get_author()->name,
+				'post_date' => $item->get_date($date_format),
+			);
+			
+			echo hungryfeed_merge_template($template_html,$rss_values);
+		}
+		else
+		{
+			echo "<div class=\"hungryfeed_item\">\n";
+				if (in_array("title",$item_fields)) 
+					echo $link_item_title 
+						? '<div class="hungryfeed_item_title"><a href="' . $item->get_permalink() . '">' . $item->get_title() . "</a></div>\n"
+						: '<div class="hungryfeed_item_title">' . $item->get_title() . '</div>';
+				if (in_array("description",$item_fields)) 
+					echo '<div class="hungryfeed_item_description">' . $item->get_description() . "</div>\n";
+				if ($item->get_author()->name && in_array("author",$item_fields)) 
+					echo '<div class="hungryfeed_item_author">Author: ' . $item->get_author()->name . "</div>\n";
+				if ($item->get_date() && in_array("date",$item_fields)) 
+					echo '<div class="hungryfeed_item_date">Posted: ' . $item->get_date($date_format) . "</div>\n";
+			echo "</div>\n";
+		}
 	}
 	
 	echo "</div>\n";
@@ -136,4 +161,25 @@ function hungryfeed_display_rss($params)
 	return $buffer;
 }
 
+$hungryfeed_merge_template_values = null;
 
+/**
+ * Replaces
+ * @param string template
+ * @param array key/value pair
+ */
+function hungryfeed_merge_template($template, $values)
+{
+	global $hungryfeed_merge_template_values;
+	$hungryfeed_merge_template_values = $values;
+	return preg_replace_callback('!\{\{(\w+)\}\}!', 'hungryfeed_merge_template_callback', $template);
+}
+
+function hungryfeed_merge_template_callback($matches)
+{
+	global $hungryfeed_merge_template_values;
+	
+	//echo "<div>called for ".$matches[1]."<div/>";
+	//print_r($hungryfeed_merge_template_values);
+	return $hungryfeed_merge_template_values[$matches[1]];
+}

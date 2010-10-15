@@ -19,20 +19,23 @@ function hungryfeed_val($arr,$key,$default='')
 /**
  * output a fatal error and optionally die
  * 
- * @param unknown_type $message
- * @param unknown_type $die
+ * @param string $message
+ * @param string $title
+ * @param bool $die
  */
-function hungryfeed_fatal($message,$title = "")
+function hungryfeed_fatal($message, $title = "", $die = false)
 {
 	echo ("<div style='margin:5px 0px 5px 0px;padding:10px;border: solid 1px red; background-color: #ff6666; color: black;'>"
 		. ($title ? "<h4 style='font-weight: bold; margin: 3px 0px 8px 0px;'>" . $title . "</h4>" : "")
 		. $message
 		. "</div>");
+		
+	if ($die) die();
 }
 
 /**
  * Used in combination with set_error_handler before reading feeds so that any errors can be caught
- * and displayed in a friendly way without freaking out people.
+ * and displayed in a friendly way without freaking out visitors.
  * @param $errno
  * @param $errstr
  * @param $errfile
