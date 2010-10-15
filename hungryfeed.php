@@ -3,7 +3,7 @@
 Plugin Name: HungryFEED
 Plugin URI: http://verysimple.com/products/hungryfeed/
 Description: HungryFEED displays RSS feeds on a page or post using Shortcodes.	Respect!
-Version: 1.2.1
+Version: 1.3.0
 Author: VerySimple
 Author URI: http://verysimple.com/
 License: GPL2
