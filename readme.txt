@@ -51,10 +51,13 @@ Documentation and support is available on the plugin homepage.
 
 == Upgrade Notice ==
 
-= 1.3.0 =
-Added custom template settings that can be used to fully customize the output of the feed
+= 1.3.1 =
+* Removed donation button and replaced it with a link to SmileTrain.  Happy Holidays!
 
 == Changelog ==
+
+= 1.3.1 =
+* Removed donation button and replaced it with a link to SmileTrain.  Happy Holidays!
 
 = 1.3.0 =
 * Added custom template settings that can be used to fully customize the output of the feed

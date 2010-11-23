@@ -67,22 +67,18 @@ hungryfeed_include_simplepie()
 				
 				<p style="font-family: courier">[hungryfeed url="http://verysimple.com/feed/"]</p>
 				
-				<h4>Support HungryFEED Development</h4>
+				<h4 style="color: navy;">Support HungryFEED Development and a Great Cause</h4>
 				
-				<p>HungryFEED is absolutely free to use and modify.  If you find HungryFEED useful and 
-				would like to encourage further development, feel free to click the donation button to 
-				the right.  You can buy me an energy drink for those long nights of coding!
-				Your Pal, Jason.</p>
+				<p>HungryFEED is absolutely free to use and modify.  However if you would like
+				to encourage it's continued development, please consider making a donation
+				directly to <a href="http://www.smiletrain.org" target="_blank">SmileTrain</a>.  I 
+				am not affiliated with SmileTrain, however it is my favorite charity.</p>
+				
+				<p>Your Pal, Jason.</p>
 			</td>
-			<td style="align: center;">
+			<td style="text-align: center; width: 200px;">
 				<img alt="HungryFEED!" src="<?php echo plugins_url().'/hungryfeed/images/hungryfeed.png'; ?>" style="margin-bottom: 15px;"/>
 			
-				<form action="https://www.paypal.com/cgi-bin/webscr" method="post">
-				<input type="hidden" name="cmd" value="_s-xclick">
-				<input type="hidden" name="hosted_button_id" value="E7B6NJWTZYQ54">
-				<input type="image" src="https://www.paypal.com/en_US/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
-				<img alt="" border="0" src="https://www.paypal.com/en_US/i/scr/pixel.gif" width="1" height="1">
-				</form>
 			</td>
 			</tr>
 		</table>
