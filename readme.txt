@@ -51,10 +51,13 @@ Documentation and support is available on the plugin homepage.
 
 == Upgrade Notice ==
 
-= 1.3.1 =
-* Removed donation button and replaced it with a link to SmileTrain.  Happy Holidays!
+= 1.3.2 =
+* Bug fix for unexpected T_OBJECT_OPERATOR
 
 == Changelog ==
+
+= 1.3.2 =
+* Bug fix for unexpected T_OBJECT_OPERATOR
 
 = 1.3.1 =
 * Removed donation button and replaced it with a link to SmileTrain.  Happy Holidays!
