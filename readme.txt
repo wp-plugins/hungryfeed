@@ -51,10 +51,13 @@ Documentation and support is available on the plugin homepage.
 
 == Upgrade Notice ==
 
-= 1.3.2 =
-* Bug fix for unexpected T_OBJECT_OPERATOR
+= 1.3.3 =
+* Added feature for stripping html from rss description using parameter allowed_tags
 
 == Changelog ==
+
+= 1.3.3 =
+* Added feature for stripping html from rss description using parameter allowed_tags
 
 = 1.3.2 =
 * Bug fix for unexpected T_OBJECT_OPERATOR
