@@ -3,13 +3,13 @@
 Plugin Name: HungryFEED
 Plugin URI: http://verysimple.com/products/hungryfeed/
 Description: HungryFEED displays RSS feeds on a page or post using Shortcodes.	Respect!
-Version: 1.3.3
+Version: 1.3.5
 Author: VerySimple
 Author URI: http://verysimple.com/
 License: GPL2
 */
 
-define('HUNGRYFEED_VERSION','1.3.3');
+define('HUNGRYFEED_VERSION','1.3.5');
 define('HUNGRYFEED_DEFAULT_CACHE_DURATION',3600);
 define('HUNGRYFEED_DEFAULT_CSS',"h3.hungryfeed_feed_title {}\np.hungryfeed_feed_description {}\ndiv.hungryfeed_items {}\ndiv.hungryfeed_item {margin-bottom: 10px;}\ndiv.hungryfeed_item_title {font-weight: bold;}\ndiv.hungryfeed_item_description {}\ndiv.hungryfeed_item_author {}\ndiv.hungryfeed_item_date {}");
 define('HUNGRYFEED_DEFAULT_HTML',"<div class=\"hungryfeed_item\">\n<h3><a href=\"{{permalink}}\">{{title}}</a></h3>\n<div>{{description}}</div>\n<div>Author: {{author}}</div>\n<div>Posted: {{post_date}}</div>\n</div>");
@@ -46,6 +46,8 @@ function hungryfeed_display_rss($params)
 	$template_id = hungryfeed_val($params,'template',0);
 	$date_format = hungryfeed_val($params,'date_format',HUNGRYFEED_DEFAULT_DATE_FORMAT);
 	$allowed_tags = hungryfeed_val($params,'allowed_tags','');
+	$strip_ellipsis = hungryfeed_val($params,'strip_ellipsis',0);
+	$filter = hungryfeed_val($params,'filter','');
 	
 	$feed_fields = explode(",", hungryfeed_val($params,'feed_fields',HUNGRYFEED_DEFAULT_FEED_FIELDS));
 	$item_fields = explode(",", hungryfeed_val($params,'item_fields',HUNGRYFEED_DEFAULT_ITEM_FIELDS));
@@ -130,9 +132,18 @@ function hungryfeed_display_rss($params)
 		$counter++;
 		$author = $item->get_author();
 		$author_name = ($author ? $author->get_name() : '');
+		$title = $item->get_title();
 		$description = $item->get_description();
 		
+		// if a filter was specified, then only show the feed items that contain the filter text
+		if ($filter && strpos($description,$filter) === false && strpos($title,$filter) === false)
+		{
+			continue;
+		}
+		
 		if ($allowed_tags) $description = strip_tags($description,$allowed_tags);
+		
+		if ($strip_ellipsis) $description = str_replace(array('[...]','...'),array('',''),$description);
 		
 		if ($max_items > 0 && $counter > $max_items) break;
 		
@@ -141,7 +152,7 @@ function hungryfeed_display_rss($params)
 		{
 			$rss_values = array(
 				'permalink' => $item->get_permalink(),
-				'title' => $item->get_title(),
+				'title' => $title,
 				'description' => $description,
 				'author' => $author_name,
 				'post_date' => $item->get_date($date_format)
@@ -154,8 +165,8 @@ function hungryfeed_display_rss($params)
 			echo "<div class=\"hungryfeed_item\">\n";
 				if (in_array("title",$item_fields)) 
 					echo $link_item_title 
-						? '<div class="hungryfeed_item_title"><a href="' . $item->get_permalink() . '">' . $item->get_title() . "</a></div>\n"
-						: '<div class="hungryfeed_item_title">' . $item->get_title() . '</div>';
+						? '<div class="hungryfeed_item_title"><a href="' . $item->get_permalink() . '">' . $title . "</a></div>\n"
+						: '<div class="hungryfeed_item_title">' . $title . '</div>';
 				if (in_array("description",$item_fields)) 
 					echo '<div class="hungryfeed_item_description">' . $description . "</div>\n";
 				if ($author_name && in_array("author",$item_fields)) 

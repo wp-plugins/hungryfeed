@@ -3,7 +3,7 @@ Contributors: verysimple
 Donate link: http://verysimple.com/products/hungryfeed/
 Tags: rss,feed,reader,feed reader,page,simplepie,inline rss,rss feed,feed reader,rss reader,inline feed reader, inline rss feed
 Requires at least: 2.7
-Tested up to: 3.0
+Tested up to: 3.0.3
 Stable tag: trunk
 
 HungryFEED displays an RSS feed inline on a page or post using Wordpress Shortcodes.
@@ -47,14 +47,20 @@ HungryFEED is a plugin that includes an RSS feed within the content of a page or
 
 = Where do I go for support? =
 
-Documentation and support is available on the plugin homepage.
+Documentation and support is available on the plugin homepage at http://verysimple.com/products/hungryfeed/
 
 == Upgrade Notice ==
 
-= 1.3.3 =
-* Added feature for stripping html from rss description using parameter allowed_tags
+= 1.3.5 =
+* Added filter parameter to include only items containing specified text
 
 == Changelog ==
+
+= 1.3.5 =
+* Added filter parameter to include only items containing specified text
+
+= 1.3.4 =
+* Added feature for stripping ellipsis from rss description using parameter strip_ellipsis
 
 = 1.3.3 =
 * Added feature for stripping html from rss description using parameter allowed_tags
