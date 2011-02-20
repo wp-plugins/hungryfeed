@@ -53,10 +53,13 @@ Documentation and support is available on the plugin homepage at http://verysimp
 
 == Upgrade Notice ==
 
-= 1.3.7 =
-* HOTFIX disabled pagination feature while investing problem with permalinks
+= 1.3.8 =
+* HOTFIX pagination re-enabled
 
 == Changelog ==
+
+= 1.3.7 =
+* HOTFIX disabled pagination feature while investing problem with permalinks
 
 = 1.3.6 =
 * Added page_size parameter for pagination (beta) and link_target for target in feed links

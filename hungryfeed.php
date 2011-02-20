@@ -3,13 +3,13 @@
 Plugin Name: HungryFEED
 Plugin URI: http://verysimple.com/products/hungryfeed/
 Description: HungryFEED displays RSS feeds on a page or post using Shortcodes.	Respect!
-Version: 1.3.7
+Version: 1.3.8
 Author: VerySimple
 Author URI: http://verysimple.com/
 License: GPL2
 */
 
-define('HUNGRYFEED_VERSION','1.3.7');
+define('HUNGRYFEED_VERSION','1.3.8');
 define('HUNGRYFEED_DEFAULT_CACHE_DURATION',3600);
 define('HUNGRYFEED_DEFAULT_CSS',"h3.hungryfeed_feed_title {}\np.hungryfeed_feed_description {}\ndiv.hungryfeed_items {}\ndiv.hungryfeed_item {margin-bottom: 10px;}\ndiv.hungryfeed_item_title {font-weight: bold;}\ndiv.hungryfeed_item_description {}\ndiv.hungryfeed_item_author {}\ndiv.hungryfeed_item_date {}");
 define('HUNGRYFEED_DEFAULT_HTML',"<div class=\"hungryfeed_item\">\n<h3><a href=\"{{permalink}}\">{{title}}</a></h3>\n<div>{{description}}</div>\n<div>Author: {{author}}</div>\n<div>Posted: {{post_date}}</div>\n</div>");
@@ -27,7 +27,7 @@ include_once(plugin_dir_path(__FILE__).'libs/utils.php');
 
 add_shortcode('hungryfeed', 'hungryfeed_display_rss');
 add_action('admin_menu', 'hungryfeed_create_menu');
-// add_filter('query_vars', 'hungryfeed_queryvars' );
+add_filter('query_vars', 'hungryfeed_queryvars' );
 
 
 /**
@@ -250,9 +250,11 @@ function hungryfeed_merge_template_callback($matches)
 
 /**
  * registration for queryvars used by hungryfeed
- * @param $qvars
+ * @param array original array of allowed wordpress query vars
+ * @return array $qvars with extra allowed vars added to the array
  */
 function hungryfeed_queryvars( $qvars )
 {
-  return array('hf_page');
+	$qvars[] = 'hf_page';
+ 	return $qvars;
 }
