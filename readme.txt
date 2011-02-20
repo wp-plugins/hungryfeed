@@ -19,12 +19,14 @@ following anywhere in your page:
 = Features =
 
 * Uses WordPress Shortcodes for simple inclusion of feeds on any page or post
-* Has a variety of parameters to control the output and what RSS fields appear
+* Has a variety of parameters to control the output formatting
 * Relies on WordPress built-in SimplePie for reading RSS
 * Fixes characters in URLs that may get mangled when editing in Visual mode
 * Caches feeds and allows configuration of the cache expiration
 * Outputs clean, HTML for easy styling with a CSS configuration setting
 * Allows you to custom the HTML template used to display feeds
+* Allows filtering of items in the RSS feed
+* Allows feed pagination
 
 == Installation ==
 
@@ -51,10 +53,13 @@ Documentation and support is available on the plugin homepage at http://verysimp
 
 == Upgrade Notice ==
 
-= 1.3.5 =
-* Added filter parameter to include only items containing specified text
+= 1.3.6 =
+* Added page_size parameter for pagination (beta) and link_target for target in feed links
 
 == Changelog ==
+
+= 1.3.6 =
+* Added page_size parameter for pagination (beta) and link_target for target in feed links
 
 = 1.3.5 =
 * Added filter parameter to include only items containing specified text

@@ -51,6 +51,50 @@ function hungryfeed_handle_rss_error($errno, $errstr, $errfile, $errline)
 }
 
 /**
+ * Create a pagination/filter URL, appending the specified querystring.  
+ * will prepend a ? or & as needed depending on the current url
+ * @param array $querystring example: array('var1'=>'val1','var2'=>'val2')
+ * @bool preserve any existing querystring parameters
+ * @return string
+ */
+function hungryfeed_create_url($pairs,$preserve_existing = true)
+{
+	$uri = isset($_SERVER["REQUEST_URI"]) ? $_SERVER["REQUEST_URI"] : "";
+	
+	// need to strip out an previous value
+	list($base,$original_qs) = explode("?",$uri,2);
+	
+	$new_qs = "";
+	$delim = "?";
+	
+	$params = explode("&",$original_qs);
+	
+	if ($preserve_existing)
+	{
+		// add existing params that we need to preserve
+		foreach ($params as $param)
+		{
+			list($key,$val) = explode("=",$param,2);
+	
+			if (!array_key_exists($key,$pairs))
+			{
+				$new_qs .= $delim . $param;
+				$delim = "&";
+			}
+		}
+	}
+
+	// now add any new params necessary
+	foreach ($pairs as $key=>$val)
+	{
+		$new_qs .= $delim . $key . "=" . $val;
+		$delim = "&";
+	}
+	
+	return $base . $new_qs;
+}
+
+/**
  * include the simplepie class files and return true if successful.  if not
  * successful then an error message will be displayed and false will be returned.
  */

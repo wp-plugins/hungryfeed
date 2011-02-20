@@ -3,7 +3,7 @@
 Plugin Name: HungryFEED
 Plugin URI: http://verysimple.com/products/hungryfeed/
 Description: HungryFEED displays RSS feeds on a page or post using Shortcodes.	Respect!
-Version: 1.3.5
+Version: 1.3.6
 Author: VerySimple
 Author URI: http://verysimple.com/
 License: GPL2
@@ -27,6 +27,8 @@ include_once(plugin_dir_path(__FILE__).'libs/utils.php');
 
 add_shortcode('hungryfeed', 'hungryfeed_display_rss');
 add_action('admin_menu', 'hungryfeed_create_menu');
+add_filter('query_vars', 'hungryfeed_queryvars' );
+
 
 /**
  * Displays the RSS feed on the page
@@ -48,6 +50,8 @@ function hungryfeed_display_rss($params)
 	$allowed_tags = hungryfeed_val($params,'allowed_tags','');
 	$strip_ellipsis = hungryfeed_val($params,'strip_ellipsis',0);
 	$filter = hungryfeed_val($params,'filter','');
+	$link_target = hungryfeed_val($params,'link_target','');
+	$page_size = hungryfeed_val($params,'page_size',0);
 	
 	$feed_fields = explode(",", hungryfeed_val($params,'feed_fields',HUNGRYFEED_DEFAULT_FEED_FIELDS));
 	$item_fields = explode(",", hungryfeed_val($params,'item_fields',HUNGRYFEED_DEFAULT_ITEM_FIELDS));
@@ -56,6 +60,9 @@ function hungryfeed_display_rss($params)
 	
 	// fix weirdness in the url due to the wordpress visual editor
 	if ($decode_url) $url = html_entity_decode($url);
+	
+	// the target code for any links in the feed
+	$target_code = ($link_target) ? "target='$link_target'" : "";
 	
 	// buffer the output.
 	ob_start();
@@ -127,7 +134,29 @@ function hungryfeed_display_rss($params)
 		? ('<' . implode('><',explode(",",$allowed_tags)) . '>') 
 		: '';
 	
-	foreach ($feed->get_items() as $item)
+	$items = $feed->get_items();
+	$pages = array();
+	$page_num = 1;
+	
+	if ($page_size)
+	{
+		// array chunk used for pagination
+		$pages = array_chunk($items, $page_size);
+
+		// grab the requested page from the querystring, make sure it's legit
+		global $wp_query;
+		if (isset($wp_query->query_vars['hf_page']))  $page_num = $wp_query->query_vars['hf_page'];
+		if (is_numeric($page_num) == false || $page_num < 1 || $page_num > count($pages)  ) $page_num = 1;
+	}
+	else
+	{
+		$pages[] = $items;
+		$page_num = 1;
+	}
+	
+	$num_pages = count($pages);
+		
+	foreach ($pages[$page_num-1] as $item)
 	{
 		$counter++;
 		$author = $item->get_author();
@@ -144,6 +173,8 @@ function hungryfeed_display_rss($params)
 		if ($allowed_tags) $description = strip_tags($description,$allowed_tags);
 		
 		if ($strip_ellipsis) $description = str_replace(array('[...]','...'),array('',''),$description);
+
+		if ($target_code) $description = str_replace('<a ','<a '.$target_code.' ',$description);
 		
 		if ($max_items > 0 && $counter > $max_items) break;
 		
@@ -165,7 +196,7 @@ function hungryfeed_display_rss($params)
 			echo "<div class=\"hungryfeed_item\">\n";
 				if (in_array("title",$item_fields)) 
 					echo $link_item_title 
-						? '<div class="hungryfeed_item_title"><a href="' . $item->get_permalink() . '">' . $title . "</a></div>\n"
+						? '<div class="hungryfeed_item_title"><a href="' . $item->get_permalink() . '" '. $target_code .'>' . $title . "</a></div>\n"
 						: '<div class="hungryfeed_item_title">' . $title . '</div>';
 				if (in_array("description",$item_fields)) 
 					echo '<div class="hungryfeed_item_description">' . $description . "</div>\n";
@@ -178,6 +209,16 @@ function hungryfeed_display_rss($params)
 	}
 	
 	echo "</div>\n";
+	
+	if ($page_size)
+	{
+		echo "<p class=\"hungryfeed_pagenav\"><span>Viewing page $page_num of $num_pages</span>";
+		
+		if ($page_num > 1) echo "<span>|</span><span><a href=\"". hungryfeed_create_url(array("hf_page" => $page_num - 1)) . "\">Previous Page</a></span>";
+		if ($page_num < $num_pages) echo "<span>|<span><a href=\"". hungryfeed_create_url(array("hf_page" => $page_num + 1)) . "\">Next Page</a></span>";
+		
+		echo "</p>";
+	}
 	
 	// flush the buffer and return
 	$buffer = ob_get_clean();
@@ -205,4 +246,13 @@ function hungryfeed_merge_template_callback($matches)
 	//echo "<div>called for ".$matches[1]."<div/>";
 	//print_r($hungryfeed_merge_template_values);
 	return $hungryfeed_merge_template_values[$matches[1]];
+}
+
+/**
+ * registration for queryvars used by hungryfeed
+ * @param $qvars
+ */
+function hungryfeed_queryvars( $qvars )
+{
+  return array('hf_page');
 }
