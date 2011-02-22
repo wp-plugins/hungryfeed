@@ -53,10 +53,16 @@ Documentation and support is available on the plugin homepage at http://verysimp
 
 == Upgrade Notice ==
 
-= 1.3.8 =
-* HOTFIX pagination re-enabled
+= 1.3.9 =
+* Added option to enable shortcodes in widgets
 
 == Changelog ==
+
+= 1.3.9 =
+* Added option to enable shortcodes in widgets
+
+= 1.3.8 =
+* HOTFIX pagination re-enabled
 
 = 1.3.7 =
 * HOTFIX disabled pagination feature while investing problem with permalinks

@@ -3,13 +3,13 @@
 Plugin Name: HungryFEED
 Plugin URI: http://verysimple.com/products/hungryfeed/
 Description: HungryFEED displays RSS feeds on a page or post using Shortcodes.	Respect!
-Version: 1.3.8
+Version: 1.3.9
 Author: VerySimple
 Author URI: http://verysimple.com/
 License: GPL2
 */
 
-define('HUNGRYFEED_VERSION','1.3.8');
+define('HUNGRYFEED_VERSION','1.3.9');
 define('HUNGRYFEED_DEFAULT_CACHE_DURATION',3600);
 define('HUNGRYFEED_DEFAULT_CSS',"h3.hungryfeed_feed_title {}\np.hungryfeed_feed_description {}\ndiv.hungryfeed_items {}\ndiv.hungryfeed_item {margin-bottom: 10px;}\ndiv.hungryfeed_item_title {font-weight: bold;}\ndiv.hungryfeed_item_description {}\ndiv.hungryfeed_item_author {}\ndiv.hungryfeed_item_date {}");
 define('HUNGRYFEED_DEFAULT_HTML',"<div class=\"hungryfeed_item\">\n<h3><a href=\"{{permalink}}\">{{title}}</a></h3>\n<div>{{description}}</div>\n<div>Author: {{author}}</div>\n<div>Posted: {{post_date}}</div>\n</div>");
@@ -17,6 +17,7 @@ define('HUNGRYFEED_DEFAULT_CACHE_LOCATION',ABSPATH . 'wp-content/cache');
 define('HUNGRYFEED_DEFAULT_FEED_FIELDS','title,description');
 define('HUNGRYFEED_DEFAULT_ITEM_FIELDS','title,description,author,date');
 define('HUNGRYFEED_DEFAULT_LINK_ITEM_TITLE',1);
+define('HUNGRYFEED_DEFAULT_ENABLE_WIDGET_SHORTCODES',0);
 define('HUNGRYFEED_DEFAULT_DATE_FORMAT','F j, Y, g:i a');
 
 /**
@@ -29,6 +30,11 @@ add_shortcode('hungryfeed', 'hungryfeed_display_rss');
 add_action('admin_menu', 'hungryfeed_create_menu');
 add_filter('query_vars', 'hungryfeed_queryvars' );
 
+// only enable widget shortcode processing if specified in the settings
+if (get_option('hungryfeed_enable_widget_shortcodes',HUNGRYFEED_DEFAULT_ENABLE_WIDGET_SHORTCODES))
+{
+	add_filter('widget_text', 'do_shortcode' );
+}
 
 /**
  * Displays the RSS feed on the page

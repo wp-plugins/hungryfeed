@@ -18,6 +18,7 @@ function hungryfeed_register_settings() {
 	//register our settings
 	register_setting( 'hungryfeed-settings-group', 'hungryfeed_cache_duration' );
 	register_setting( 'hungryfeed-settings-group', 'hungryfeed_css' );
+	register_setting( 'hungryfeed-settings-group', 'hungryfeed_enable_widget_shortcodes' );
 	register_setting( 'hungryfeed-settings-group', 'hungryfeed_html_1' );
 	register_setting( 'hungryfeed-settings-group', 'hungryfeed_html_2' );
 	register_setting( 'hungryfeed-settings-group', 'hungryfeed_html_3' );
@@ -82,7 +83,6 @@ hungryfeed_include_simplepie()
 			</td>
 			</tr>
 		</table>
-
 	</div>
 
 <form method="post" action="options.php">
@@ -94,6 +94,24 @@ hungryfeed_include_simplepie()
         <td><input type="text" style="width:50px;" name="hungryfeed_cache_duration" value="<?php echo get_option('hungryfeed_cache_duration',HUNGRYFEED_DEFAULT_CACHE_DURATION); ?>" /> (Enter 0 to disable caching)</td>
         </tr>
          
+        <tr valign="top">
+        <th scope="row">Allow Feeds in Widgets</th>
+        <td>
+        <select name="hungryfeed_enable_widget_shortcodes">
+        <option value="0">Use current WordPress setting (<?php echo get_option('hungryfeed_enable_widget_shortcodes',HUNGRYFEED_DEFAULT_ENABLE_WIDGET_SHORTCODES) ? 'Unknown' : (has_filter( 'widget_text', 'do_shortcode') ? 'Enabled' : 'Disabled') ?>)</option>
+        <option value="1"
+        <?php 
+        	if (get_option('hungryfeed_enable_widget_shortcodes',HUNGRYFEED_DEFAULT_ENABLE_WIDGET_SHORTCODES))
+        	{
+        		echo " selected=\"selected\"";
+        	}
+        ?>
+        >Enabled</option>
+        </select><br/>
+        <em>Caution: This setting will enable shortcodes in widgets for all plugins, not just HungryFEED.</em>
+        </td>
+        </tr>
+
         <tr valign="top">
         <th scope="row">CSS Code</th>
         <td><textarea name="hungryfeed_css" cols="25" rows="5" style="width: 400px; height: 160px;"><?php echo get_option('hungryfeed_css',HUNGRYFEED_DEFAULT_CSS); ?></textarea></td>
