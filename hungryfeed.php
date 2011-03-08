@@ -3,13 +3,13 @@
 Plugin Name: HungryFEED
 Plugin URI: http://verysimple.com/products/hungryfeed/
 Description: HungryFEED displays RSS feeds on a page or post using Shortcodes.	Respect!
-Version: 1.3.9
+Version: 1.4.0
 Author: VerySimple
 Author URI: http://verysimple.com/
 License: GPL2
 */
 
-define('HUNGRYFEED_VERSION','1.3.9');
+define('HUNGRYFEED_VERSION','1.4.0');
 define('HUNGRYFEED_DEFAULT_CACHE_DURATION',3600);
 define('HUNGRYFEED_DEFAULT_CSS',"h3.hungryfeed_feed_title {}\np.hungryfeed_feed_description {}\ndiv.hungryfeed_items {}\ndiv.hungryfeed_item {margin-bottom: 10px;}\ndiv.hungryfeed_item_title {font-weight: bold;}\ndiv.hungryfeed_item_description {}\ndiv.hungryfeed_item_author {}\ndiv.hungryfeed_item_date {}");
 define('HUNGRYFEED_DEFAULT_HTML',"<div class=\"hungryfeed_item\">\n<h3><a href=\"{{permalink}}\">{{title}}</a></h3>\n<div>{{description}}</div>\n<div>Author: {{author}}</div>\n<div>Posted: {{post_date}}</div>\n</div>");
@@ -171,7 +171,7 @@ function hungryfeed_display_rss($params)
 		$description = $item->get_description();
 		
 		// if a filter was specified, then only show the feed items that contain the filter text
-		if ($filter && strpos($description,$filter) === false && strpos($title,$filter) === false)
+		if ($filter && stripos($description,$filter) === false && stripos($title,$filter) === false)
 		{
 			continue;
 		}
@@ -231,6 +231,42 @@ function hungryfeed_display_rss($params)
 	return $buffer;
 }
 
+/** @var array private var used by hungryfeed_parse_dom_query */
+$hungryfeed_merge_template_documents = array();
+
+/**
+ * Returns the results of the dom query using phpquery
+ * @link http://code.google.com/p/phpquery/
+ * @param string $html to parse
+ * @param string $selector query
+ * @return string
+ */
+function hungryfeed_parse_dom_query($html, $selector, $method = "text")
+{
+	// only include phpQuery if selectors are used so it isn't unecessarily loaded
+	include_once(plugin_dir_path(__FILE__).'libs/phpQuery-onefile.php');
+	
+	global $hungryfeed_merge_template_documents;
+
+	// cache this because it is expensive and we may have multiple selectors for one template
+	if ( !array_key_exists($html,$hungryfeed_merge_template_documents) )
+	{
+		$hungryfeed_merge_template_documents[$html] = phpQuery::newDocument($html);
+	}
+	
+	$pq = $hungryfeed_merge_template_documents[$html];
+	$result = phpQuery::pq($selector, $pq->documentID);
+	
+	$output = $method == "html"
+		? $result->html()
+		: $result->text();
+	
+	// phpQuery::unloadDocuments();
+	
+	return $output;
+}
+
+/** @var array private var used by hungryfeed_merge_template */
 $hungryfeed_merge_template_values = null;
 
 /**
@@ -242,16 +278,33 @@ function hungryfeed_merge_template($template, $values)
 {
 	global $hungryfeed_merge_template_values;
 	$hungryfeed_merge_template_values = $values;
-	return preg_replace_callback('!\{\{(\w+)\}\}!', 'hungryfeed_merge_template_callback', $template);
+	// this regex looks for tags, for example: {{anything}}
+	return preg_replace_callback('!{{(([^}])+)}}!', 'hungryfeed_merge_template_callback', $template);
 }
 
 function hungryfeed_merge_template_callback($matches)
 {
 	global $hungryfeed_merge_template_values;
 	
-	//echo "<div>called for ".$matches[1]."<div/>";
-	//print_r($hungryfeed_merge_template_values);
-	return $hungryfeed_merge_template_values[$matches[1]];
+	$key = $matches[1];
+	// echo "<div>called for ".$key."<div/>";
+	
+	if (substr($key,0,13) == 'select(html).' || substr($key,0,13) == 'select(text).')
+	{
+		// this is a dom query of the description field
+		$value = hungryfeed_parse_dom_query(
+			$hungryfeed_merge_template_values['description'],
+			substr($key,13),
+			substr($key,7,4)
+		);
+	}
+	else
+	{
+		// this is a simple replacement
+		$value = $hungryfeed_merge_template_values[$key];
+	}
+	
+	return $value;
 }
 
 /**

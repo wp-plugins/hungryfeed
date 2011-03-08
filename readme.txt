@@ -53,10 +53,15 @@ Documentation and support is available on the plugin homepage at http://verysimp
 
 == Upgrade Notice ==
 
-= 1.3.9 =
-* Added option to enable shortcodes in widgets
+= 1.4.0 =
+* Added feature to templates for transforming the RSS description field using phpquery selectors
+* Filter parameter is now case-insensitive
 
 == Changelog ==
+
+= 1.4.0 =
+* Added feature to templates for transforming the RSS description field using phpquery selectors
+* Filter parameter is now case-insensitive
 
 = 1.3.9 =
 * Added option to enable shortcodes in widgets
