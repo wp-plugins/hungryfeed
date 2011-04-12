@@ -53,11 +53,19 @@ Documentation and support is available on the plugin homepage at http://verysimp
 
 == Upgrade Notice ==
 
-= 1.4.0 =
-* Added feature to templates for transforming the RSS description field using phpquery selectors
-* Filter parameter is now case-insensitive
+= 1.4.1 =
+* multiple filter words can now be specified, separated by a pipe | char
+* Added attr selector in order to get attributes of selected elements, such as an image src
+* added additional properties to the feed: soure, enclosure, id, category
+* updated settings page with documentation
 
 == Changelog ==
+
+= 1.4.1 =
+* multiple filter words can now be specified, separated by a pipe | char
+* Added attr selector in order to get attributes of selected elements, such as an image src
+* added additional properties to the feed: soure, enclosure, id, category
+* updated settings page with documentation
 
 = 1.4.0 =
 * Added feature to templates for transforming the RSS description field using phpquery selectors

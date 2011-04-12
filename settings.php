@@ -42,6 +42,15 @@ function hungryfeed_settings_page() {
 	{
 		vertical-align: top;
 	}
+	
+	.hungryfeed_section_header
+	{
+		border: solid 1px #c6c6c6;
+		margin: 12px 2px 8px 2px;
+		padding: 20px;
+		background-color: #e1e1e1;
+	}
+	
 </style>
 
 <div class="wrap">
@@ -64,11 +73,14 @@ hungryfeed_include_simplepie()
 				Check out the 
 				<a href="http://verysimple.com/products/hungryfeed/">HungryFEED Site</a> for documentation and support.</p>
 				
-				<h4>Usage Example</h4>
+				<h4>Basic Usage Example</h4>
 				
 				<p style="font-family: courier">[hungryfeed url="http://verysimple.com/feed/"]</p>
 				
-				<h4 style="color: navy;">Support HungryFEED Development and a Great Cause</h4>
+				<p>See the documentation on the <a href="http://verysimple.com/products/hungryfeed/">HungryFEED Site</a>
+				for a full list of parameters that you can use to filter, customize an transform the output.</p>
+				
+				<h4>How To Support HungryFEED Development and a Great Cause</h4>
 				
 				<p>HungryFEED is absolutely free to use and modify.  However if you would like
 				to encourage it's continued development, please consider making a donation
@@ -113,9 +125,25 @@ hungryfeed_include_simplepie()
         </tr>
 
         <tr valign="top">
-        <th scope="row">CSS Code</th>
+        <th scope="row">Custom CSS Code</th>
         <td><textarea name="hungryfeed_css" cols="25" rows="5" style="width: 400px; height: 160px;"><?php echo get_option('hungryfeed_css',HUNGRYFEED_DEFAULT_CSS); ?></textarea></td>
         </tr>
+        
+        </table>
+        
+        <div class="hungryfeed_section_header">
+        <h4 style="margin-top: 0px;">Custom Templates</h4>
+        
+        <p>Custom Templates can be used by specifying, for example template="1" in the shortcode.  Placeholder values
+        available within the template are: {{id}}, {{category}}, {{permalink}}, {{title}}, {{description}}, 
+        {{author}}, {{post_date}}, {{source_title}}, {{source_permalink}}, {{latitude}}, {{longitude}}, {{enclosure}}</p>
+        
+        <p>Additionally CSS selectors can be used on the description field using a 
+        phpquery syntax for example:
+        {{select(html).div:first}} or {{select(text).a:eq(2)}} or {{select(attr:src).img:first}}</p>
+        </div>
+        
+        <table class="form-table">
 
         <tr valign="top">
         <th scope="row">Custom Template 1</th>

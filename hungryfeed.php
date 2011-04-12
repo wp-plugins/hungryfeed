@@ -3,7 +3,7 @@
 Plugin Name: HungryFEED
 Plugin URI: http://verysimple.com/products/hungryfeed/
 Description: HungryFEED displays RSS feeds on a page or post using Shortcodes.	Respect!
-Version: 1.4.0
+Version: 1.4.1
 Author: VerySimple
 Author URI: http://verysimple.com/
 License: GPL2
@@ -161,19 +161,39 @@ function hungryfeed_display_rss($params)
 	}
 	
 	$num_pages = count($pages);
+	
+	// filters is a pip-delimited value
+	$filters = $filter ? explode("|",$filter) : array();
 		
 	foreach ($pages[$page_num-1] as $item)
 	{
 		$counter++;
+		
+		// flatten the author into a string
 		$author = $item->get_author();
 		$author_name = ($author ? $author->get_name() : '');
+				
 		$title = $item->get_title();
 		$description = $item->get_description();
 		
-		// if a filter was specified, then only show the feed items that contain the filter text
-		if ($filter && stripos($description,$filter) === false && stripos($title,$filter) === false)
-		{
-			continue;
+		// if any filters were specified, then only show the feed items that contain the filter text
+		if (count($filters))
+		{	
+			$match = false;
+			foreach($filters as $f)
+			{	
+				if (stripos($description,$f) !== false || stripos($title,$f) !== false)
+				{
+					$match = true;
+					break;
+				}
+			}
+			
+			if (!$match)
+			{
+				// didn't match the filter
+				continue;
+			}
 		}
 		
 		if ($allowed_tags) $description = strip_tags($description,$allowed_tags);
@@ -187,12 +207,40 @@ function hungryfeed_display_rss($params)
 		// either use a template, or the default layout
 		if ($template_html)
 		{
+			// flatten these
+			$enclosure = $item->get_enclosure();
+			$enclosure_link = $enclosure ? $enclosure->get_link() : "";
+			
+			$category = $item->get_category();
+			$category_label = $category ? $category->get_label() : "";
+	
+			$source = $item->get_source();
+			$source_title = $source ? $source->get_title() : "";
+			$source_permalink = $source ? $source->get_permalink() : "";
+			
+			// for some reason simplepie doesn't always get the source
+			if (!$source)
+			{
+				try	{
+					$source_title = $item->data['child']['']['source'][0]['data'];
+					$source_permalink = $item->data['child']['']['source'][0]['attribs']['url'];
+				} catch (Exception $ex) {}
+			}
+				
+			
 			$rss_values = array(
+				'id' => $item->get_id(),
 				'permalink' => $item->get_permalink(),
 				'title' => $title,
 				'description' => $description,
 				'author' => $author_name,
-				'post_date' => $item->get_date($date_format)
+				'post_date' => $item->get_date($date_format),
+				'source_title' => $source_title,
+				'source_permalink' => $source_permalink,
+				'latitude' => $item->get_latitude(),
+				'longitude' => $item->get_longitude(),
+				'category' => $category_label,
+				'enclosure' => $enclosure_link
 			);
 			
 			echo hungryfeed_merge_template($template_html,$rss_values);
@@ -241,7 +289,7 @@ $hungryfeed_merge_template_documents = array();
  * @param string $selector query
  * @return string
  */
-function hungryfeed_parse_dom_query($html, $selector, $method = "text")
+function hungryfeed_parse_dom_query($html, $selector, $method = "text", $attr = "")
 {
 	// only include phpQuery if selectors are used so it isn't unecessarily loaded
 	include_once(plugin_dir_path(__FILE__).'libs/phpQuery-onefile.php');
@@ -257,9 +305,18 @@ function hungryfeed_parse_dom_query($html, $selector, $method = "text")
 	$pq = $hungryfeed_merge_template_documents[$html];
 	$result = phpQuery::pq($selector, $pq->documentID);
 	
-	$output = $method == "html"
-		? $result->html()
-		: $result->text();
+	switch ($method)
+	{
+		case "html":
+			$output = $result->html();
+			break;
+		case "text":
+			$output = $result->text();
+			break;
+		case "attr":
+			$output = $result->attr($attr);
+			break;
+	}
 	
 	// phpQuery::unloadDocuments();
 	
@@ -297,6 +354,18 @@ function hungryfeed_merge_template_callback($matches)
 			substr($key,13),
 			substr($key,7,4)
 		);
+	}
+	elseif (substr($key,0,12) == 'select(attr:')
+	{	
+		$endpos = strpos($key,")");
+		
+		$value = hungryfeed_parse_dom_query(
+			$hungryfeed_merge_template_values['description'],
+			substr($key,$endpos+2),
+			"attr",
+			substr($key,12,$endpos-12)
+		);
+		
 	}
 	else
 	{
