@@ -3,13 +3,13 @@
 Plugin Name: HungryFEED
 Plugin URI: http://verysimple.com/products/hungryfeed/
 Description: HungryFEED displays RSS feeds on a page or post using Shortcodes.	Respect!
-Version: 1.4.2
+Version: 1.4.3
 Author: VerySimple
 Author URI: http://verysimple.com/
 License: GPL2
 */
 
-define('HUNGRYFEED_VERSION','1.4.2');
+define('HUNGRYFEED_VERSION','1.4.3');
 define('HUNGRYFEED_DEFAULT_CACHE_DURATION',3600);
 define('HUNGRYFEED_DEFAULT_CSS',"h3.hungryfeed_feed_title {}\np.hungryfeed_feed_description {}\ndiv.hungryfeed_items {}\ndiv.hungryfeed_item {margin-bottom: 10px;}\ndiv.hungryfeed_item_title {font-weight: bold;}\ndiv.hungryfeed_item_description {}\ndiv.hungryfeed_item_author {}\ndiv.hungryfeed_item_date {}");
 define('HUNGRYFEED_DEFAULT_HTML',"<div class=\"hungryfeed_item\">\n<h3><a href=\"{{permalink}}\">{{title}}</a></h3>\n<div>{{description}}</div>\n<div>Author: {{author}}</div>\n<div>Posted: {{post_date}}</div>\n</div>");
@@ -199,7 +199,7 @@ function hungryfeed_display_rss($params)
 		
 		if ($allowed_tags) $description = strip_tags($description,$allowed_tags);
 		
-		if ($truncate_description) $description = hungryfeed_truncate($description,$truncate_description);
+		if ($truncate_description) $description = hungryfeed_truncate($description,$truncate_description, array('ending' => '...', 'exact' => true, 'html' => true) );
 		
 		if ($strip_ellipsis) $description = str_replace(array('[...]','...'),array('',''),$description);
 
