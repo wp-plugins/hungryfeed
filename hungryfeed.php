@@ -3,13 +3,13 @@
 Plugin Name: HungryFEED
 Plugin URI: http://verysimple.com/products/hungryfeed/
 Description: HungryFEED displays RSS feeds on a page or post using Shortcodes.	Respect!
-Version: 1.4.3
+Version: 1.4.4
 Author: VerySimple
 Author URI: http://verysimple.com/
 License: GPL2
 */
 
-define('HUNGRYFEED_VERSION','1.4.3');
+define('HUNGRYFEED_VERSION','1.4.4');
 define('HUNGRYFEED_DEFAULT_CACHE_DURATION',3600);
 define('HUNGRYFEED_DEFAULT_CSS',"h3.hungryfeed_feed_title {}\np.hungryfeed_feed_description {}\ndiv.hungryfeed_items {}\ndiv.hungryfeed_item {margin-bottom: 10px;}\ndiv.hungryfeed_item_title {font-weight: bold;}\ndiv.hungryfeed_item_description {}\ndiv.hungryfeed_item_author {}\ndiv.hungryfeed_item_date {}");
 define('HUNGRYFEED_DEFAULT_HTML',"<div class=\"hungryfeed_item\">\n<h3><a href=\"{{permalink}}\">{{title}}</a></h3>\n<div>{{description}}</div>\n<div>Author: {{author}}</div>\n<div>Posted: {{post_date}}</div>\n</div>");
@@ -58,6 +58,7 @@ function hungryfeed_display_rss($params)
 	$filter = hungryfeed_val($params,'filter','');
 	$link_target = hungryfeed_val($params,'link_target','');
 	$page_size = hungryfeed_val($params,'page_size',0);
+	$order = hungryfeed_val($params,'order','');
 	$truncate_description = hungryfeed_val($params,'truncate_description',0);
 	
 	$feed_fields = explode(",", hungryfeed_val($params,'feed_fields',HUNGRYFEED_DEFAULT_FEED_FIELDS));
@@ -142,6 +143,16 @@ function hungryfeed_display_rss($params)
 		: '';
 	
 	$items = $feed->get_items();
+	
+	if ($order == "reverse")
+	{
+		$items = array_reverse($items);
+	}
+	else if ($order == "random")
+	{
+		shuffle($items);
+	}
+	
 	$pages = array();
 	$page_num = 1;
 	

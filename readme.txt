@@ -53,10 +53,13 @@ Documentation and support is available on the plugin homepage at http://verysimp
 
 == Upgrade Notice ==
 
-= 1.4.3 =
-* update to truncate_description parameter to consider html by default
+= 1.4.4 =
+* added order parameter to allow reverse or random order
 
 == Changelog ==
+
+= 1.4.4 =
+* added order parameter to allow reverse or random order
 
 = 1.4.3 =
 * description can now be truncated using truncate_description parameter
