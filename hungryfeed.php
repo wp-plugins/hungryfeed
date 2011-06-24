@@ -3,13 +3,13 @@
 Plugin Name: HungryFEED
 Plugin URI: http://verysimple.com/products/hungryfeed/
 Description: HungryFEED displays RSS feeds on a page or post using Shortcodes.	Respect!
-Version: 1.4.4
+Version: 1.4.5
 Author: VerySimple
 Author URI: http://verysimple.com/
 License: GPL2
 */
 
-define('HUNGRYFEED_VERSION','1.4.4');
+define('HUNGRYFEED_VERSION','1.4.5');
 define('HUNGRYFEED_DEFAULT_CACHE_DURATION',3600);
 define('HUNGRYFEED_DEFAULT_CSS',"h3.hungryfeed_feed_title {}\np.hungryfeed_feed_description {}\ndiv.hungryfeed_items {}\ndiv.hungryfeed_item {margin-bottom: 10px;}\ndiv.hungryfeed_item_title {font-weight: bold;}\ndiv.hungryfeed_item_description {}\ndiv.hungryfeed_item_author {}\ndiv.hungryfeed_item_date {}");
 define('HUNGRYFEED_DEFAULT_HTML',"<div class=\"hungryfeed_item\">\n<h3><a href=\"{{permalink}}\">{{title}}</a></h3>\n<div>{{description}}</div>\n<div>Author: {{author}}</div>\n<div>Posted: {{post_date}}</div>\n</div>");
@@ -56,6 +56,7 @@ function hungryfeed_display_rss($params)
 	$allowed_tags = hungryfeed_val($params,'allowed_tags','');
 	$strip_ellipsis = hungryfeed_val($params,'strip_ellipsis',0);
 	$filter = hungryfeed_val($params,'filter','');
+	$filter_out = hungryfeed_val($params,'filter_out','');
 	$link_target = hungryfeed_val($params,'link_target','');
 	$page_size = hungryfeed_val($params,'page_size',0);
 	$order = hungryfeed_val($params,'order','');
@@ -176,7 +177,8 @@ function hungryfeed_display_rss($params)
 	
 	// filters is a pip-delimited value
 	$filters = $filter ? explode("|",$filter) : array();
-		
+	$filters_out = $filter_out ? explode("|",$filter_out) : array();
+	
 	foreach ($pages[$page_num-1] as $item)
 	{
 		$counter++;
@@ -188,7 +190,7 @@ function hungryfeed_display_rss($params)
 		$title = $item->get_title();
 		$description = $item->get_description();
 		
-		// if any filters were specified, then only show the feed items that contain the filter text
+			// if any filters were specified, then only show the feed items that contain the filter text
 		if (count($filters))
 		{	
 			$match = false;
@@ -203,7 +205,28 @@ function hungryfeed_display_rss($params)
 			
 			if (!$match)
 			{
-				// didn't match the filter
+				// didn't match the filter, exit the foreach loop
+				continue;
+			}
+		}
+		
+		
+		// if any filters were specified, then only show the feed items that contain the filter text
+		if (count($filters_out))
+		{	
+			$match = false;
+			foreach($filters_out as $fo)
+			{	
+				if (stripos($description,$fo) !== false || stripos($title,$fo) !== false)
+				{
+					$match = true;
+					break;
+				}
+			}
+			
+			if ($match)
+			{
+				// did match the filter_out, exit the foreach loop
 				continue;
 			}
 		}

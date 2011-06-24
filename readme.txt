@@ -53,10 +53,13 @@ Documentation and support is available on the plugin homepage at http://verysimp
 
 == Upgrade Notice ==
 
-= 1.4.4 =
-* added order parameter to allow reverse or random order
+= 1.4.5 =
+* added filter_out parameter to exclude items with certain keywords
 
 == Changelog ==
+
+= 1.4.5 =
+* added filter_out parameter to exclude items with certain keywords
 
 = 1.4.4 =
 * added order parameter to allow reverse or random order
