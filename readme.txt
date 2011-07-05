@@ -1,34 +1,41 @@
 === Plugin Name ===
 Contributors: verysimple
 Donate link: http://verysimple.com/products/hungryfeed/
-Tags: rss,feed,reader,feed reader,page,simplepie,inline rss,rss feed,feed reader,rss reader,inline feed reader, inline rss feed
+Tags: inline,embed,rss,feed,reader,feed reader,page,simplepie,inline rss,rss feed,feed reader,rss reader,inline feed reader,embed feed,inline rss feed
 Requires at least: 2.7
-Tested up to: 3.0.3
+Tested up to: 3.2.0
 Stable tag: trunk
 
-HungryFEED displays an RSS feed inline on a page or post using Wordpress Shortcodes.
+HungryFEED embeds and displays RSS feeds inline on your pages, posts or sidebar using Shortcodes.
 
 == Description ==
 
-HungryFEED allows you to display an RSS feed inline on your page by simply adding 
-a Wordpress Shortcode within the page.  Usage is easy, just type the 
-following anywhere in your page:
+HungryFEED allows you to embed and display an RSS feed inline on your posts, pages or sidebar
+by adding a Shortcode.  Usage is easy, just use the following shortcode:
 
 [hungryfeed url="http://verysimple.com/feed/"]
 
 = Features =
 
-* Uses WordPress Shortcodes for simple inclusion of feeds on any page or post
-* Has a variety of parameters to control the output formatting
-* Relies on WordPress built-in SimplePie for reading RSS
+* Uses WordPress Shortcodes to embed RSS feeds on any page, post or sidebar widget
+* Has a variety of parameters to filter and format the feed
+* Relies on WordPress built-in SimplePie for processing RSS data
 * Fixes characters in URLs that may get mangled when editing in Visual mode
 * Caches feeds and allows configuration of the cache expiration
 * Outputs clean, HTML for easy styling with a CSS configuration setting
-* Allows you to custom the HTML template used to display feeds
-* Allows filtering of items in the RSS feed
+* Allows you to customize the HTML using templates
+* Allows filtering of items in the RSS feed based on keywords
 * Allows feed pagination
 
 == Installation ==
+
+Automatic Installation:
+
+1. Go to Admin - Plugins - Add New
+2. Search for HungryFEED
+3. Click the Install Button
+
+Manual Installation:
 
 1. Download hungryfeed.zip (or use the WordPress "Add New Plugin" feature)
 2. Extract the ZIP and upload the 'hungryfeed' folder to the '/wp-content/plugins/' directory
@@ -53,10 +60,17 @@ Documentation and support is available on the plugin homepage at http://verysimp
 
 == Upgrade Notice ==
 
-= 1.4.5 =
-* added filter_out parameter to exclude items with certain keywords
+= 1.4.6 =
+* added a button to the post/page editor to provide a GUI for creating shortcodes
+* added index tag to be used in templates
+* category tag in template now displays comma-delimited list if there are multiple categories
 
 == Changelog ==
+
+= 1.4.6 =
+* added a button to the post/page editor to provide a GUI for creating shortcodes
+* added index tag to be used in templates
+* category tag in template now displays comma-delimited list if there are multiple categories
 
 = 1.4.5 =
 * added filter_out parameter to exclude items with certain keywords

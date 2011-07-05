@@ -19,6 +19,7 @@ function hungryfeed_register_settings() {
 	register_setting( 'hungryfeed-settings-group', 'hungryfeed_cache_duration' );
 	register_setting( 'hungryfeed-settings-group', 'hungryfeed_css' );
 	register_setting( 'hungryfeed-settings-group', 'hungryfeed_enable_widget_shortcodes' );
+	register_setting( 'hungryfeed-settings-group', 'hungryfeed_enable_editor_button' );
 	register_setting( 'hungryfeed-settings-group', 'hungryfeed_html_1' );
 	register_setting( 'hungryfeed-settings-group', 'hungryfeed_html_2' );
 	register_setting( 'hungryfeed-settings-group', 'hungryfeed_html_3' );
@@ -125,6 +126,24 @@ hungryfeed_include_simplepie()
         </tr>
 
         <tr valign="top">
+        <th scope="row">HungryFEED MCE Editor Button</th>
+        <td>
+        <select name="hungryfeed_enable_editor_button">
+        <option value="0">Disabled</option>
+        <option value="1"
+        <?php 
+        	if (get_option('hungryfeed_enable_editor_button',HUNGRYFEED_DEFAULT_ENABLE_EDITOR_BUTTON))
+        	{
+        		echo " selected=\"selected\"";
+        	}
+        ?>
+        >Enabled</option>
+        </select><br/>
+        <em>This will display a HungryFEED button in the Post/Page editor if enabled.</em>
+        </td>
+        </tr>
+        
+        <tr valign="top">
         <th scope="row">Custom CSS Code</th>
         <td><textarea name="hungryfeed_css" cols="25" rows="5" style="width: 400px; height: 160px;"><?php echo get_option('hungryfeed_css',HUNGRYFEED_DEFAULT_CSS); ?></textarea></td>
         </tr>
@@ -135,7 +154,7 @@ hungryfeed_include_simplepie()
         <h4 style="margin-top: 0px;">Custom Templates</h4>
         
         <p>Custom Templates can be used by specifying, for example template="1" in the shortcode.  Placeholder values
-        available within the template are: {{id}}, {{category}}, {{permalink}}, {{title}}, {{description}}, 
+        available within the template are: {{id}}, {{index}}, {{category}}, {{permalink}}, {{title}}, {{description}}, 
         {{author}}, {{post_date}}, {{source_title}}, {{source_permalink}}, {{latitude}}, {{longitude}}, {{enclosure}}</p>
         
         <p>Additionally CSS selectors can be used on the description field using a 

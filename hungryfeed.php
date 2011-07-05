@@ -3,13 +3,13 @@
 Plugin Name: HungryFEED
 Plugin URI: http://verysimple.com/products/hungryfeed/
 Description: HungryFEED displays RSS feeds on a page or post using Shortcodes.	Respect!
-Version: 1.4.5
+Version: 1.4.6
 Author: VerySimple
 Author URI: http://verysimple.com/
 License: GPL2
 */
 
-define('HUNGRYFEED_VERSION','1.4.5');
+define('HUNGRYFEED_VERSION','1.4.6');
 define('HUNGRYFEED_DEFAULT_CACHE_DURATION',3600);
 define('HUNGRYFEED_DEFAULT_CSS',"h3.hungryfeed_feed_title {}\np.hungryfeed_feed_description {}\ndiv.hungryfeed_items {}\ndiv.hungryfeed_item {margin-bottom: 10px;}\ndiv.hungryfeed_item_title {font-weight: bold;}\ndiv.hungryfeed_item_description {}\ndiv.hungryfeed_item_author {}\ndiv.hungryfeed_item_date {}");
 define('HUNGRYFEED_DEFAULT_HTML',"<div class=\"hungryfeed_item\">\n<h3><a href=\"{{permalink}}\">{{title}}</a></h3>\n<div>{{description}}</div>\n<div>Author: {{author}}</div>\n<div>Posted: {{post_date}}</div>\n</div>");
@@ -18,6 +18,7 @@ define('HUNGRYFEED_DEFAULT_FEED_FIELDS','title,description');
 define('HUNGRYFEED_DEFAULT_ITEM_FIELDS','title,description,author,date');
 define('HUNGRYFEED_DEFAULT_LINK_ITEM_TITLE',1);
 define('HUNGRYFEED_DEFAULT_ENABLE_WIDGET_SHORTCODES',0);
+define('HUNGRYFEED_DEFAULT_ENABLE_EDITOR_BUTTON',1);
 define('HUNGRYFEED_DEFAULT_DATE_FORMAT','F j, Y, g:i a');
 
 /**
@@ -34,6 +35,50 @@ add_filter('query_vars', 'hungryfeed_queryvars' );
 if (get_option('hungryfeed_enable_widget_shortcodes',HUNGRYFEED_DEFAULT_ENABLE_WIDGET_SHORTCODES))
 {
 	add_filter('widget_text', 'do_shortcode' );
+}
+
+// handle any post-render intialization
+add_action('init', 'hungryfeed_init');
+
+
+/**
+ * Fired on initialization.  Allows initialization to occur after page render.
+ * Currently this is used only to register the MCE editor button
+ */
+function hungryfeed_init() 
+{
+
+	// register the MCE editor plugin if necessary
+	if ( current_user_can('edit_posts') || current_user_can('edit_pages') )
+	{
+		if ( get_user_option('rich_editing') == 'true' && get_option('hungryfeed_enable_editor_button',HUNGRYFEED_DEFAULT_ENABLE_EDITOR_BUTTON)) 
+		{
+			add_filter("mce_external_plugins", "hungryfeed_register_mce_plugin");
+			add_filter('mce_buttons', 'hungryfeed_register_mce_buttons');
+		}
+	}
+}
+
+/**
+ * Register the HungryFEED MCE Editor Plugin
+ * @param array $plugin_array
+ * @return array
+ */
+function hungryfeed_register_mce_plugin($plugin_array) 
+{
+	$plugin_array['hungryfeed'] = plugins_url('/hungryfeed/scripts/editor_plugin.js');
+	return $plugin_array;
+}
+
+/**
+ * Add the HungryFEED button to the MCE Editor
+ * @param array $buttons
+ * @return array
+ */
+function hungryfeed_register_mce_buttons($buttons) 
+{
+	array_push($buttons, "hungryfeedButton");
+	return $buttons;
 }
 
 /**
@@ -179,6 +224,8 @@ function hungryfeed_display_rss($params)
 	$filters = $filter ? explode("|",$filter) : array();
 	$filters_out = $filter_out ? explode("|",$filter_out) : array();
 	
+	$item_index = ($page_num-1) * $page_size;
+	
 	foreach ($pages[$page_num-1] as $item)
 	{
 		$counter++;
@@ -248,9 +295,15 @@ function hungryfeed_display_rss($params)
 			$enclosure = $item->get_enclosure();
 			$enclosure_link = $enclosure ? $enclosure->get_link() : "";
 			
-			$category = $item->get_category();
-			$category_label = $category ? $category->get_label() : "";
-	
+			$category_label = "";
+			$cdelim = "";
+			$categories = $item->get_categories();
+			foreach ($categories as $category)
+			{
+				$category_label .= $cdelim . $category->get_label();
+				$cdelim = ", ";
+			}
+			
 			$source = $item->get_source();
 			$source_title = $source ? $source->get_title() : "";
 			$source_permalink = $source ? $source->get_permalink() : "";
@@ -266,6 +319,7 @@ function hungryfeed_display_rss($params)
 				
 			
 			$rss_values = array(
+				'index' => ++$item_index,
 				'id' => $item->get_id(),
 				'permalink' => $item->get_permalink(),
 				'title' => $title,
@@ -315,6 +369,7 @@ function hungryfeed_display_rss($params)
 	$buffer = ob_get_clean();
 	return $buffer;
 }
+
 
 /** @var array private var used by hungryfeed_parse_dom_query */
 $hungryfeed_merge_template_documents = array();
