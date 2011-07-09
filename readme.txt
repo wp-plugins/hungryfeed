@@ -60,12 +60,13 @@ Documentation and support is available on the plugin homepage at http://verysimp
 
 == Upgrade Notice ==
 
-= 1.4.6 =
-* added a button to the post/page editor to provide a GUI for creating shortcodes
-* added index tag to be used in templates
-* category tag in template now displays comma-delimited list if there are multiple categories
+= 1.4.7 =
+* fixed bug with feeds that have no category
 
 == Changelog ==
+
+= 1.4.7 =
+* fixed bug with feeds that have no category
 
 = 1.4.6 =
 * added a button to the post/page editor to provide a GUI for creating shortcodes
