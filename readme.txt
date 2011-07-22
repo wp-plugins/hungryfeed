@@ -54,6 +54,30 @@ Manual Installation:
 
 HungryFEED is a plugin that includes an RSS feed within the content of a page or post
 
+= I'm getting the error wp-content/cache/ is not writeable, what is wrong? =
+
+In order to use caching, you must have a folder in wp-content called "cache" which is writable by the web server.  If you are not able to do this, you can optionally go to Settings->HungryFEED and set the Cache Duration to 0.  It is recommended that you do have this directory to enable caching, though, otherwise your site will pull from the RSS feed every time a visitor views it which is considered bad etiquette.
+
+= The title of the feed is displaying, how can I hide that? =
+
+To hide the feed title you can use the feed_items parameter to specify which feed fields you wish to appear like so: feed_items=""
+
+= How do I put double quotes into a feed url? =
+
+To put double-quotes into a feed url, enter %22 instead of the double-quote.  This is necessary because the url parameter in the Shortcode is already double-quoted and so you have to use some other character.
+
+= HungryFEED won't read my feed, what do I do? =
+
+First, enter the feed URL in your browser and see if it displays correctly.  If the feed appears to be valid, you may try using some of the debug parameters to investigate.  If you still cannot figure out the problem, you can submit a ticket for support (See the Technical Support section above)
+
+= I keep getting the verysimple feed instead of my own, what's the problem? =
+
+The verysimple feed is used as the default value if no URL is provided.  But if you get it despite passing in a URL it means that something in the Shortcode parameters is broken and WordPress is not passing them through.  One common cause is when you have a double-quote (") in one of the parameters.  Another is if you copy/paste the URL into the shortcode, sometimes you may actually have pasted in HTML code.  Use the HTML view to make sure you did not paste in HTML code into the shortcode parameter.  If your URL has double-quotes (like eBay for example) then replace them all with %22.
+
+= How can I get a feed to appear in a sidebar widget? =
+
+Shortcodes are not enabled in Widgets by default.  However as of HungryFEED 1.3.9 there is an option to enable Shortcode processing in Widgets on the HungryFEED settings page.  Be aware that this will enable Shortcode for all plugins, not just HungryFEED.  WordPress currently does not support selectively enabling Shortcode for a single plugin, so it is an all-or-nothing option.
+
 = Where do I go for support? =
 
 Documentation and support is available on the plugin homepage at http://verysimple.com/products/hungryfeed/
