@@ -44,9 +44,9 @@ Manual Installation:
 
 == Screenshots ==
 
-1. HungryFEED editor button assists you with the Shortcode for your page or post
-2. The RSS feed is pulled, cached and displayed inline
-3. HungryFEED hungry for RSS feeds!
+1. HungryFEED hungry for RSS feeds!
+2. HungryFEED editor button assists you with the Shortcode for your page or post
+3. The RSS feed is pulled, cached and displayed inline
 
 == Frequently Asked Questions ==
 
