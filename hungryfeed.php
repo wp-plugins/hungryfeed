@@ -472,12 +472,15 @@ function hungryfeed_merge_template_callback($matches)
 }
 
 /**
- * registration for queryvars used by hungryfeed
+ * registration for queryvars used by hungryfeed.  this registers any
+ * querystring variables that hungryfeed requires so that wordpress will 
+ * process them
+ * 
  * @param array original array of allowed wordpress query vars
  * @return array $qvars with extra allowed vars added to the array
  */
 function hungryfeed_queryvars( $qvars )
 {
-	$qvars[] = 'hf_page';
+	$qvars[] = 'hf_page';  // used by pagination
  	return $qvars;
 }

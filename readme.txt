@@ -3,7 +3,7 @@ Contributors: verysimple
 Donate link: http://verysimple.com/products/hungryfeed/
 Tags: inline,embed,rss,feed,reader,feed reader,page,simplepie,inline rss,rss feed,feed reader,rss reader,inline feed reader,embed feed,inline rss feed
 Requires at least: 2.7
-Tested up to: 3.2.0
+Tested up to: 3.2.1
 Stable tag: trunk
 
 HungryFEED embeds and displays RSS feeds inline on your pages, posts or sidebar using Shortcodes.
