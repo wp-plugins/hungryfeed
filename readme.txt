@@ -31,14 +31,14 @@ by adding a Shortcode.  Usage is easy, just use the following shortcode:
 
 Automatic Installation:
 
-1. Go to Admin - Plugins - Add New
-2. Search for HungryFEED
-3. Click the Install Button
+1. Go to Admin - Plugins - Add New and search for "hungryfeed"
+2. Click the Install Button
+3. Click 'Activate'
 
 Manual Installation:
 
 1. Download hungryfeed.zip (or use the WordPress "Add New Plugin" feature)
-2. Extract the ZIP and upload the 'hungryfeed' folder to the '/wp-content/plugins/' directory
+2. Unzip and upload 'hungryfeed' folder to your '/wp-content/plugins/' directory
 3. To support caching, ensure the directory 'wp-content/cache' exists and is writable.
 4. Activate the plugin through the 'Plugins' menu in WordPress
 
