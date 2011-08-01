@@ -28,13 +28,21 @@ include_once(plugin_dir_path(__FILE__).'settings.php');
 include_once(plugin_dir_path(__FILE__).'libs/utils.php');
 
 add_shortcode('hungryfeed', 'hungryfeed_display_rss');
-add_action('admin_menu', 'hungryfeed_create_menu');
 add_filter('query_vars', 'hungryfeed_queryvars' );
 
 // only enable widget shortcode processing if specified in the settings
 if (get_option('hungryfeed_enable_widget_shortcodes',HUNGRYFEED_DEFAULT_ENABLE_WIDGET_SHORTCODES))
 {
-	add_filter('widget_text', 'do_shortcode' );
+	// saw this recommended but is it still necessary in current versions?
+	// if (function_exists('shortcode_unautop')) add_filter('widget_text', 'shortcode_unautop'); 
+	
+	add_filter('widget_text', 'do_shortcode' );  // tell wordpress to look for shortcodes in widget text
+	
+	/* these probably should never be enabled, perhaps in the case of a private site...? */
+	//add_filter( 'comment_text', 'shortcode_unautop');
+	//add_filter( 'comment_text', 'do_shortcode' );
+	//add_filter( 'the_excerpt', 'shortcode_unautop');
+	//add_filter( 'the_excerpt', 'do_shortcode');
 }
 
 // handle any post-render intialization

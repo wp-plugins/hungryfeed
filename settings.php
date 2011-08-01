@@ -5,7 +5,14 @@
  * ################################################################################
  */
 
-function hungryfeed_create_menu() {
+// hook the plugin menu link into the admin menu
+add_action('admin_menu', 'hungryfeed_create_menu');
+
+/**
+ * Create the menu link to the plugin settings page and hook into admin_init
+ */
+function hungryfeed_create_menu() 
+{
 
 	//create new top-level menu
 	add_options_page('HungryFEED Plugin Settings', 'HungryFEED', 'administrator', __FILE__, 'hungryfeed_settings_page');
@@ -14,7 +21,11 @@ function hungryfeed_create_menu() {
 	add_action( 'admin_init', 'hungryfeed_register_settings' );
 }
 
-function hungryfeed_register_settings() {
+/**
+ * Registers all of the plugin settings on admin_init
+ */
+function hungryfeed_register_settings() 
+{
 	//register our settings
 	register_setting( 'hungryfeed-settings-group', 'hungryfeed_cache_duration' );
 	register_setting( 'hungryfeed-settings-group', 'hungryfeed_css' );
@@ -25,7 +36,11 @@ function hungryfeed_register_settings() {
 	register_setting( 'hungryfeed-settings-group', 'hungryfeed_html_3' );
 }
 
-function hungryfeed_settings_page() {
+/**
+ * Render the settings page
+ */
+function hungryfeed_settings_page() 
+{
 ?>
 <style>
 	#hungryfeed_header
