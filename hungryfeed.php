@@ -3,13 +3,13 @@
 Plugin Name: HungryFEED
 Plugin URI: http://verysimple.com/products/hungryfeed/
 Description: HungryFEED displays RSS feeds on a page or post using Shortcodes.	Respect!
-Version: 1.4.7
+Version: 1.4.8
 Author: VerySimple
 Author URI: http://verysimple.com/
 License: GPL2
 */
 
-define('HUNGRYFEED_VERSION','1.4.7');
+define('HUNGRYFEED_VERSION','1.4.8');
 define('HUNGRYFEED_DEFAULT_CACHE_DURATION',3600);
 define('HUNGRYFEED_DEFAULT_CSS',"h3.hungryfeed_feed_title {}\np.hungryfeed_feed_description {}\ndiv.hungryfeed_items {}\ndiv.hungryfeed_item {margin-bottom: 10px;}\ndiv.hungryfeed_item_title {font-weight: bold;}\ndiv.hungryfeed_item_description {}\ndiv.hungryfeed_item_author {}\ndiv.hungryfeed_item_date {}");
 define('HUNGRYFEED_DEFAULT_HTML',"<div class=\"hungryfeed_item\">\n<h3><a href=\"{{permalink}}\">{{title}}</a></h3>\n<div>{{description}}</div>\n<div>Author: {{author}}</div>\n<div>Posted: {{post_date}}</div>\n</div>");
@@ -20,6 +20,8 @@ define('HUNGRYFEED_DEFAULT_LINK_ITEM_TITLE',1);
 define('HUNGRYFEED_DEFAULT_ENABLE_WIDGET_SHORTCODES',0);
 define('HUNGRYFEED_DEFAULT_ENABLE_EDITOR_BUTTON',1);
 define('HUNGRYFEED_DEFAULT_DATE_FORMAT','F j, Y, g:i a');
+
+$HUNGRYFEED_BAD_DATA_CHARS = array('#','&;','`','|','*','?','<','>','^','(',')','{','}','$','\',',',', "\x0A", "\xFF");
 
 /**
  * import supporting libraries
@@ -102,6 +104,7 @@ function hungryfeed_display_rss($params)
 	$url = hungryfeed_val($params,'url','http://verysimple.com/feed/');
 	$force_feed = hungryfeed_val($params,'force_feed','0');
 	$xml_dump = hungryfeed_val($params,'xml_dump','0');
+	$show_data = hungryfeed_val($params,'show_data','0');
 	$decode_url = hungryfeed_val($params,'decode_url','1');
 	$max_items = hungryfeed_val($params,'max_items',0);
 	$template_id = hungryfeed_val($params,'template',0);
@@ -295,8 +298,8 @@ function hungryfeed_display_rss($params)
 		if ($target_code) $description = str_replace('<a ','<a '.$target_code.' ',$description);
 		
 		if ($max_items > 0 && $counter > $max_items) break;
-		
-		// either use a template, or the default layout
+				
+			// either use a template, or the default layout
 		if ($template_html)
 		{
 			// flatten these
@@ -342,13 +345,17 @@ function hungryfeed_display_rss($params)
 				'latitude' => $item->get_latitude(),
 				'longitude' => $item->get_longitude(),
 				'category' => $category_label,
-				'enclosure' => $enclosure_link
+				'enclosure' => $enclosure_link,
+				'data' => $item->data
 			);
 			
 			echo hungryfeed_merge_template($template_html,$rss_values);
 		}
 		else
 		{
+			
+			echo "<p>PRICE = " . $item->data['child']['http://itunes.apple.com/rss']['price']['0']['data'] . "</p>";
+			
 			echo "<div class=\"hungryfeed_item\">\n";
 				if (in_array("title",$item_fields)) 
 					echo $link_item_title 
@@ -362,9 +369,17 @@ function hungryfeed_display_rss($params)
 					echo '<div class="hungryfeed_item_date">Posted: ' . $item->get_date($date_format) . "</div>\n";
 			echo "</div>\n";
 		}
+
+		if ($show_data) 
+		{
+			echo "<div class='hungryfeed_item_data'><textarea style='width: 400px; height: 100px;'>" 
+				. (print_r($item->data,1)) 
+				. "</textarea></div>";
+		}
 	}
 	
 	echo "</div>\n";
+
 	
 	if ($page_size)
 	{
@@ -469,6 +484,18 @@ function hungryfeed_merge_template_callback($matches)
 			substr($key,12,$endpos-12)
 		);
 		
+	}
+	elseif (substr($key,0,5) == 'data[')
+	{
+		// we are expecting a value in the format data['child']['http://test.com']['somevar']['0']['data']
+		$data = $hungryfeed_merge_template_values['data'];
+		
+		global $HUNGRYFEED_BAD_DATA_CHARS;
+		
+		$varname = '$' . str_replace($HUNGRYFEED_BAD_DATA_CHARS,'',$key);
+		
+		$value = eval("return $varname;");
+
 	}
 	else
 	{

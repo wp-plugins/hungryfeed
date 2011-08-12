@@ -172,9 +172,13 @@ hungryfeed_include_simplepie()
         available within the template are: {{id}}, {{index}}, {{category}}, {{permalink}}, {{title}}, {{description}}, 
         {{author}}, {{post_date}}, {{source_title}}, {{source_permalink}}, {{latitude}}, {{longitude}}, {{enclosure}}</p>
         
-        <p>Additionally CSS selectors can be used on the description field using a 
+        <p>CSS selectors can be used on the description field using a 
         phpquery syntax for example:
         {{select(html).div:first}} or {{select(text).a:eq(2)}} or {{select(attr:src).img:first}}</p>
+        
+        <p>Raw feed data can be retrieved using the "data" variable for example:
+        {{data['child']['http://itunes.apple.com/rss']['price']['0']['data']}}.  (Add the parameter show_data="1" in
+        your shortcode to view the raw feed data array)</p>
         </div>
         
         <table class="form-table">

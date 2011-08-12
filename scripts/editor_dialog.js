@@ -59,6 +59,7 @@ var HungryFeedDialog = {
 		var force_feed = f.force_feed_yes.checked ? '1' : '0';
 		var decode_url = f.decode_url_yes.checked ? '1' : '0';
 		var xml_dump = f.xml_dump_yes.checked ? '1' : '0';
+		var show_data = f.show_data_yes.checked ? '1' : '0';
 
 		var contents = '[hungryfeed url="' + url + '"';
 		
@@ -80,6 +81,7 @@ var HungryFeedDialog = {
 		if (force_feed == '1') contents += ' force_feed="1"';
 		if (decode_url == '0') contents += ' decode_url="0"';
 		if (xml_dump == '1') contents += ' xml_dump="1"';
+		if (show_data == '1') contents += ' show_data="1"';
 		
 		contents += ']';
 
