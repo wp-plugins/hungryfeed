@@ -3,13 +3,13 @@
 Plugin Name: HungryFEED
 Plugin URI: http://verysimple.com/products/hungryfeed/
 Description: HungryFEED displays RSS feeds on a page or post using Shortcodes.	Respect!
-Version: 1.4.8
+Version: 1.4.9
 Author: VerySimple
 Author URI: http://verysimple.com/
 License: GPL2
 */
 
-define('HUNGRYFEED_VERSION','1.4.8');
+define('HUNGRYFEED_VERSION','1.4.9');
 define('HUNGRYFEED_DEFAULT_CACHE_DURATION',3600);
 define('HUNGRYFEED_DEFAULT_CSS',"h3.hungryfeed_feed_title {}\np.hungryfeed_feed_description {}\ndiv.hungryfeed_items {}\ndiv.hungryfeed_item {margin-bottom: 10px;}\ndiv.hungryfeed_item_title {font-weight: bold;}\ndiv.hungryfeed_item_description {}\ndiv.hungryfeed_item_author {}\ndiv.hungryfeed_item_date {}");
 define('HUNGRYFEED_DEFAULT_HTML',"<div class=\"hungryfeed_item\">\n<h3><a href=\"{{permalink}}\">{{title}}</a></h3>\n<div>{{description}}</div>\n<div>Author: {{author}}</div>\n<div>Posted: {{post_date}}</div>\n</div>");
@@ -352,10 +352,7 @@ function hungryfeed_display_rss($params)
 			echo hungryfeed_merge_template($template_html,$rss_values);
 		}
 		else
-		{
-			
-			echo "<p>PRICE = " . $item->data['child']['http://itunes.apple.com/rss']['price']['0']['data'] . "</p>";
-			
+		{			
 			echo "<div class=\"hungryfeed_item\">\n";
 				if (in_array("title",$item_fields)) 
 					echo $link_item_title 

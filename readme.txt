@@ -88,11 +88,13 @@ Documentation is available on the plugin homepage at http://wordpress.org/tags/h
 
 == Upgrade Notice ==
 
-= 1.4.8 =
-* added ability to pull any field using the "data" variable in the template to pull in raw feed data
-* added option in the shortcode wizard for "show_data" to view the raw feed data
+= 1.4.9 =
+* fixed bug in 1.4.8 with debug code being output
 
 == Changelog ==
+
+= 1.4.9 =
+* fixed bug with "price" being displayed
 
 = 1.4.8 =
 * added ability to pull any field using the "data" variable in the template to pull in raw feed data
