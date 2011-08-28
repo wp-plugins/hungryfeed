@@ -88,10 +88,13 @@ Documentation is available on the plugin homepage at http://wordpress.org/tags/h
 
 == Upgrade Notice ==
 
-= 1.4.9 =
-* fixed bug in 1.4.8 with debug code being output
+= 1.5.0 =
+* error message is displayed if data expression contains illegal characters
 
 == Changelog ==
+
+= 1.5.0 =
+* error message is displayed if data expression contains illegal characters
 
 = 1.4.9 =
 * fixed bug with "price" being displayed

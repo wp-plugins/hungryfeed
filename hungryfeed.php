@@ -3,13 +3,13 @@
 Plugin Name: HungryFEED
 Plugin URI: http://verysimple.com/products/hungryfeed/
 Description: HungryFEED displays RSS feeds on a page or post using Shortcodes.	Respect!
-Version: 1.4.9
+Version: 1.5.0
 Author: VerySimple
 Author URI: http://verysimple.com/
 License: GPL2
 */
 
-define('HUNGRYFEED_VERSION','1.4.9');
+define('HUNGRYFEED_VERSION','1.5.0');
 define('HUNGRYFEED_DEFAULT_CACHE_DURATION',3600);
 define('HUNGRYFEED_DEFAULT_CSS',"h3.hungryfeed_feed_title {}\np.hungryfeed_feed_description {}\ndiv.hungryfeed_items {}\ndiv.hungryfeed_item {margin-bottom: 10px;}\ndiv.hungryfeed_item_title {font-weight: bold;}\ndiv.hungryfeed_item_description {}\ndiv.hungryfeed_item_author {}\ndiv.hungryfeed_item_date {}");
 define('HUNGRYFEED_DEFAULT_HTML',"<div class=\"hungryfeed_item\">\n<h3><a href=\"{{permalink}}\">{{title}}</a></h3>\n<div>{{description}}</div>\n<div>Author: {{author}}</div>\n<div>Posted: {{post_date}}</div>\n</div>");
@@ -489,9 +489,17 @@ function hungryfeed_merge_template_callback($matches)
 		
 		global $HUNGRYFEED_BAD_DATA_CHARS;
 		
-		$varname = '$' . str_replace($HUNGRYFEED_BAD_DATA_CHARS,'',$key);
+		$safeKey = str_replace($HUNGRYFEED_BAD_DATA_CHARS,'',$key);
 		
-		$value = eval("return $varname;");
+		if ($safeKey == $key)
+		{
+			$varname = '$' . $safeKey;
+			$value = eval("return $varname;");
+		}
+		else
+		{
+			$value = 'data expression contains illegal characters';
+		}
 
 	}
 	else
