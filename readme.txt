@@ -66,9 +66,14 @@ The verysimple feed is used as the default value if no URL is provided, or WordP
 * A double-quote (") in the data of one of the parameters will cause a mal-formed Shortcode.  If your feed URL has double-quotes (like eBay feeds for example) then replace every " in the URL with %22
 * Copy/pasting the URL into the shortcode will sometimes create HTML instead of plain text.  Use the WordPress editor's HTML View to view the raw HTML source code of your post and make sure the URL parameter is plain text and not HTML code
 
-= 3. I'm getting the error wp-content/cache/ is not writeable, what is wrong? =
+= 3. I'm getting the error that wp-content/cache/ does not exist or is not writeable, what is wrong? =
 
-In order to use caching, you must have a folder in wp-content called "cache" which is writable by the web server.  If you are not able to do this, you can optionally go to Settings->HungryFEED and set the Cache Duration to 0.  It is recommended that you do have this directory to enable caching, though, otherwise your site will pull from the RSS feed every time a visitor views it which is considered bad etiquette.
+In order to use caching, you must have a folder in wp-content called "cache" which is writable by the web server.  
+If you are not able to do this, you can optionally go to Settings->HungryFEED and set the Cache Duration to 0.  
+It is strongly recommended that you do have this directory to enable caching, though, otherwise your site will make an 
+HTTP request to the RSS content provider every time any visitor views it.  This makes your site slower because it 
+has to retrive the RSS content every time.  It could also be considered bad etiquette to continually hit your 
+content provider's feed.
 
 = 4. How do I put double quotes into a feed url? =
 
