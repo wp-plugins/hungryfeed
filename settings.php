@@ -34,6 +34,7 @@ function hungryfeed_register_settings()
 	register_setting( 'hungryfeed-settings-group', 'hungryfeed_html_1' );
 	register_setting( 'hungryfeed-settings-group', 'hungryfeed_html_2' );
 	register_setting( 'hungryfeed-settings-group', 'hungryfeed_html_3' );
+	register_setting( 'hungryfeed-settings-group', 'hungryfeed_error_template' );
 }
 
 /**
@@ -196,6 +197,21 @@ hungryfeed_include_simplepie()
        <tr valign="top">
         <th scope="row">Custom Template 3</th>
         <td><textarea name="hungryfeed_html_3" cols="25" rows="5" style="width: 400px; height: 160px;"><?php echo get_option('hungryfeed_html_3',HUNGRYFEED_DEFAULT_HTML); ?></textarea></td>
+        </tr>
+
+        </table>
+        
+        <div class="hungryfeed_section_header">
+        
+        <p>If an error is encountered, HungryFEED will output it to the browser.  You can adjust the design of
+        this output so that user do not see an error.  The tag {{error}} will be replaced by the error details.</p>
+        </div>
+        
+        <table class="form-table">
+        
+       <tr valign="top">
+        <th scope="row">Error Message Template</th>
+        <td><textarea name="hungryfeed_error_template" cols="25" rows="5" style="width: 400px; height: 160px;"><?php echo get_option('hungryfeed_error_template',HUNGRYFEED_DEFAULT_ERROR_TEMPLATE); ?></textarea></td>
         </tr>
 
         <tr valign="top">

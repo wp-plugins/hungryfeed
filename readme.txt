@@ -93,10 +93,13 @@ Documentation is available on the plugin homepage at http://wordpress.org/tags/h
 
 == Upgrade Notice ==
 
-= 1.5.0 =
-* error message is displayed if data expression contains illegal characters
+= 1.5.1 =
+* added setting to customize the error output
 
 == Changelog ==
+
+= 1.5.1 =
+* added setting to customize the error output
 
 = 1.5.0 =
 * error message is displayed if data expression contains illegal characters

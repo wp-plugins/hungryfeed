@@ -25,11 +25,10 @@ function hungryfeed_val($arr,$key,$default='')
  */
 function hungryfeed_fatal($message, $title = "", $die = false)
 {
-	echo ("<div style='margin:5px 0px 5px 0px;padding:10px;border: solid 1px red; background-color: #ff6666; color: black;'>"
-		. ($title ? "<h4 style='font-weight: bold; margin: 3px 0px 8px 0px;'>" . $title . "</h4>" : "")
-		. $message
-		. "</div>");
-		
+	$html = get_option('hungryfeed_error_template',HUNGRYFEED_DEFAULT_ERROR_TEMPLATE);
+	
+	echo str_replace("{{error}}", trim($title . " " . $message), $html);
+
 	if ($die) die();
 }
 
