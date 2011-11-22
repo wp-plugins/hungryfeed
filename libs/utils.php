@@ -155,7 +155,7 @@ function hungryfeed_handle_rss_error($errno, $errstr, $errfile, $errline)
 	// the simplepie plugin makes a lot of static calls illegally.  ignore 'em
 	if ($errno == '2048') return true;
 	
-	hungryfeed_fatal("An error occured while processing the feed: " . $errstr);
+	hungryfeed_fatal("Error Processing Feed: " . $errstr . " at " . $errfile . " line" . $errline);
 	return true;
 }
 

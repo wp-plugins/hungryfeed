@@ -93,10 +93,13 @@ Documentation is available on the plugin homepage at http://wordpress.org/tags/h
 
 == Upgrade Notice ==
 
-= 1.5.1 =
-* added setting to customize the error output
+= 1.5.2 =
+* added additional info to error checking for easier debugging
 
 == Changelog ==
+
+= 1.5.2 =
+* added additional info to error checking for easier debugging
 
 = 1.5.1 =
 * added setting to customize the error output
