@@ -144,7 +144,9 @@ function hungryfeed_truncate($text, $length = 100, $options = array()) {
 
 /**
  * Used in combination with set_error_handler before reading feeds so that any errors can be caught
- * and displayed in a friendly way without freaking out visitors.
+ * and displayed in a friendly way without freaking out visitors.  to prevent unecessary warnings
+ * this will disregard any errors of type E_STRICT, E_DEPRECATED and E_USER_DEPRECATED
+ * 
  * @param $errno
  * @param $errstr
  * @param $errfile
@@ -152,10 +154,17 @@ function hungryfeed_truncate($text, $length = 100, $options = array()) {
  */
 function hungryfeed_handle_rss_error($errno, $errstr, $errfile, $errline) 
 {
-	// the simplepie plugin makes a lot of static calls illegally.  ignore 'em
-	if ($errno == '2048') return true;
+	// these may not be defined depending on the version of php
+	if (!defined('E_STRICT')) define('E_STRICT',2048);
+	if (!defined('E_DEPRECATED')) define('E_DEPRECATED',8192);
+	if (!defined('E_USER_DEPRECATED')) define('E_USER_DEPRECATED',16384);
+
+	// simplepie throws a lot of strict errors unfortunately due to illegal static method calls
+	// use a little bitwise voodoo
+	$ignore = $errno & (E_STRICT | E_DEPRECATED | E_USER_DEPRECATED);
+	if ($ignore == $errno) return true;
 	
-	hungryfeed_fatal("Error Processing Feed: " . $errstr . " at " . $errfile . " line" . $errline);
+	hungryfeed_fatal("Error $errno Processing Feed: " . $result . " at " . $errfile . " line " . $errline);
 	return true;
 }
 

@@ -60,10 +60,10 @@ To hide the feed title you can use the feed_items parameter to specify which fee
 
 = 2. I keep getting the verysimple.com feed instead of my own, what's the problem? =
 
-The verysimple feed is used as the default value if no URL is provided, or WordPress can't read the URL parameter due to a syntax error.  Here are some known causes:
+The verysimple feed is used as the default value if no URL is provided, or WordPress can't read the URL parameter due to either a syntax error in the shortcode, or a special character in the feed url.  Here are some known causes:
 
 * Using curly quotes instead of straight quotes (ie Ó vs  ")  See http://en.wikipedia.org/wiki/Quotation_mark_glyphs
-* A double-quote (") in the data of one of the parameters will cause a mal-formed Shortcode.  If your feed URL has double-quotes (like eBay feeds for example) then replace every " in the URL with %22
+* Certain special characters in the feed url must be url encoded.  Here are some known characters and their replacement:  "=%22 [=%5B  ]=%5D  (see http://www.w3schools.com/tags/ref_urlencode.asp)
 * Copy/pasting the URL into the shortcode will sometimes create HTML instead of plain text.  Use the WordPress editor's HTML View to view the raw HTML source code of your post and make sure the URL parameter is plain text and not HTML code
 
 = 3. I'm getting the error that wp-content/cache/ does not exist or is not writeable, what is wrong? =
@@ -93,10 +93,13 @@ Documentation is available on the plugin homepage at http://wordpress.org/tags/h
 
 == Upgrade Notice ==
 
-= 1.5.2 =
-* added additional info to error checking for easier debugging
+= 1.5.3 =
+* improved error reporting in combination with other plugins
 
 == Changelog ==
+
+= 1.5.3 =
+* improved error reporting in combination with other plugins
 
 = 1.5.2 =
 * added additional info to error checking for easier debugging
