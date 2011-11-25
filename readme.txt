@@ -93,10 +93,13 @@ Documentation is available on the plugin homepage at http://wordpress.org/tags/h
 
 == Upgrade Notice ==
 
-= 1.5.3 =
-* improved error reporting in combination with other plugins
+= 1.5.4 =
+* further adjustments to error reporting
 
 == Changelog ==
+
+= 1.5.4 =
+* further adjustments to error reporting
 
 = 1.5.3 =
 * improved error reporting in combination with other plugins

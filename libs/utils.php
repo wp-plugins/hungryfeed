@@ -154,17 +154,20 @@ function hungryfeed_truncate($text, $length = 100, $options = array()) {
  */
 function hungryfeed_handle_rss_error($errno, $errstr, $errfile, $errline) 
 {
+	// don't do anything if error reporting is off (the @ is used)
+	if (error_reporting() == 0) return;
+	
 	// these may not be defined depending on the version of php
 	if (!defined('E_STRICT')) define('E_STRICT',2048);
 	if (!defined('E_DEPRECATED')) define('E_DEPRECATED',8192);
 	if (!defined('E_USER_DEPRECATED')) define('E_USER_DEPRECATED',16384);
 
-	// simplepie throws a lot of strict errors unfortunately due to illegal static method calls
-	// use a little bitwise voodoo
+	// simplepie causes a few errors unfortunately due to illegal static method calls
+	// and unfortunately we wind up catching errors in other plugins as well
 	$ignore = $errno & (E_STRICT | E_DEPRECATED | E_USER_DEPRECATED);
 	if ($ignore == $errno) return true;
 	
-	hungryfeed_fatal("Error $errno Processing Feed: " . $result . " at " . $errfile . " line " . $errline);
+	hungryfeed_fatal("Error Processing Feed: " . $errstr . " at " . $errfile . " line " . $errline);
 	return true;
 }
 
