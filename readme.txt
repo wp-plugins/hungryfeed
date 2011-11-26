@@ -93,10 +93,13 @@ Documentation is available on the plugin homepage at http://wordpress.org/tags/h
 
 == Upgrade Notice ==
 
-= 1.5.4 =
-* further adjustments to error reporting
+= 1.5.5 =
+* fixed incorrect item count when using filter and max_items together
 
 == Changelog ==
+
+= 1.5.5 =
+* fixed incorrect item count when using filter and max_items together
 
 = 1.5.4 =
 * further adjustments to error reporting
