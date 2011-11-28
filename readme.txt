@@ -93,10 +93,13 @@ Documentation is available on the plugin homepage at http://wordpress.org/tags/h
 
 == Upgrade Notice ==
 
-= 1.5.5 =
-* fixed incorrect item count when using filter and max_items together
+= 1.5.6 =
+* added order="none" parameter to not sort feed items
 
 == Changelog ==
+
+= 1.5.6 =
+* added order="none" parameter to not sort feed items
 
 = 1.5.5 =
 * fixed incorrect item count when using filter and max_items together
