@@ -93,10 +93,19 @@ Documentation is available on the plugin homepage at http://wordpress.org/tags/h
 
 == Upgrade Notice ==
 
-= 1.5.6 =
-* added order="none" parameter to not sort feed items
+= 1.5.7 =
+* templates now use Mustache template engine
+* added ability to enable shortcodes in templates
+* added field for custom javascript
+* added index_#, feed_title and feed_description template tags
 
 == Changelog ==
+
+= 1.5.7 =
+* templates now use Mustache template engine
+* added ability to enable shortcodes in templates
+* added field for custom javascript
+* added index_#, feed_title and feed_description template tags
 
 = 1.5.6 =
 * added order="none" parameter to not sort feed items

@@ -3,15 +3,16 @@
 Plugin Name: HungryFEED
 Plugin URI: http://verysimple.com/products/hungryfeed/
 Description: HungryFEED displays RSS feeds on a page or post using Shortcodes.	Respect!
-Version: 1.5.6
+Version: 1.5.7
 Author: VerySimple
 Author URI: http://verysimple.com/
 License: GPL2
 */
 
-define('HUNGRYFEED_VERSION','1.5.6');
+define('HUNGRYFEED_VERSION','1.5.7');
 define('HUNGRYFEED_DEFAULT_CACHE_DURATION',3600);
 define('HUNGRYFEED_DEFAULT_CSS',"h3.hungryfeed_feed_title {}\np.hungryfeed_feed_description {}\ndiv.hungryfeed_items {}\ndiv.hungryfeed_item {margin-bottom: 10px;}\ndiv.hungryfeed_item_title {font-weight: bold;}\ndiv.hungryfeed_item_description {}\ndiv.hungryfeed_item_author {}\ndiv.hungryfeed_item_date {}");
+define('HUNGRYFEED_DEFAULT_JS',"<script type=\"text/javascript\">\n// Custom Javascript here...\n</script>");
 define('HUNGRYFEED_DEFAULT_HTML',"<div class=\"hungryfeed_item\">\n<h3><a href=\"{{permalink}}\">{{title}}</a></h3>\n<div>{{description}}</div>\n<div>Author: {{author}}</div>\n<div>Posted: {{post_date}}</div>\n</div>");
 define('HUNGRYFEED_DEFAULT_ERROR_TEMPLATE',"<div style=\"margin:5px 0px 5px 0px;padding:10px;border: solid 1px red; background-color: #ff6666; color: black;\">\n{{error}}\n</div>");
 define('HUNGRYFEED_DEFAULT_CACHE_LOCATION',ABSPATH . 'wp-content/cache');
@@ -19,6 +20,7 @@ define('HUNGRYFEED_DEFAULT_FEED_FIELDS','title,description');
 define('HUNGRYFEED_DEFAULT_ITEM_FIELDS','title,description,author,date');
 define('HUNGRYFEED_DEFAULT_LINK_ITEM_TITLE',1);
 define('HUNGRYFEED_DEFAULT_ENABLE_WIDGET_SHORTCODES',0);
+define('HUNGRYFEED_DEFAULT_ENABLE_TEMPLATE_SHORTCODES',0);
 define('HUNGRYFEED_DEFAULT_ENABLE_EDITOR_BUTTON',1);
 define('HUNGRYFEED_DEFAULT_DATE_FORMAT','F j, Y, g:i a');
 
@@ -133,8 +135,10 @@ function hungryfeed_display_rss($params)
 	// buffer the output.
 	ob_start();
 	
-	echo "<style>\n" .  get_option('hungryfeed_css',HUNGRYFEED_DEFAULT_CSS) . "\n</style>";
-
+	// output the custom css and javascript
+	echo "<style>\n" .  get_option('hungryfeed_css',HUNGRYFEED_DEFAULT_CSS) . "\n</style>\n";
+	echo get_option('hungryfeed_js',HUNGRYFEED_DEFAULT_JS) . "\n";
+	
 	// catch any errors that simplepie throws
 	set_error_handler('hungryfeed_handle_rss_error');
 	$feed = new SimplePie();
@@ -338,10 +342,14 @@ function hungryfeed_display_rss($params)
 				} catch (Exception $ex) {}
 			}
 				
+			$item_index++;
 			
 			$rss_values = array(
-				'index' => ++$item_index,
+				'index' => $item_index,
+				'index_'. $item_index => true,
 				'id' => $item->get_id(),
+				'feed_title' => $feed->get_title(),
+				'feed_description' => $feed->get_description(),
 				'permalink' => $item->get_permalink(),
 				'title' => $title,
 				'description' => $description,
@@ -455,17 +463,39 @@ $hungryfeed_merge_template_values = null;
  */
 function hungryfeed_merge_template($template, $values)
 {
+	// first look for any of the select or data tags
 	global $hungryfeed_merge_template_values;
 	$hungryfeed_merge_template_values = $values;
-	// this regex looks for tags, for example: {{anything}}
-	return preg_replace_callback('!{{(([^}])+)}}!', 'hungryfeed_merge_template_callback', $template);
+	
+	// this regex looks for "select" tags
+	$template = preg_replace_callback('!{{select(([^}])+)}}!', 'hungryfeed_merge_select_template_callback', $template);
+	
+	// this regex looks for "data" tags
+	$template = preg_replace_callback('!{{data(([^}])+)}}!', 'hungryfeed_merge_data_template_callback', $template);
+	
+	// mustache handles the rest
+	include_once(plugin_dir_path(__FILE__).'libs/Mustache.php');
+	$m = new Mustache();
+	$result = $m->render($template,$values);
+	
+	if (get_option('hungryfeed_enable_template_shortcodes',HUNGRYFEED_DEFAULT_ENABLE_TEMPLATE_SHORTCODES))
+	{
+		$result = do_shortcode($result);
+	}
+	
+	return $result;
+	
 }
 
-function hungryfeed_merge_template_callback($matches)
+/**
+ * process the "select" tags
+ * @param array $matches
+ */
+function hungryfeed_merge_select_template_callback($matches)
 {
 	global $hungryfeed_merge_template_values;
 	
-	$key = $matches[1];
+	$key = "select" . $matches[1];
 	// echo "<div>called for ".$key."<div/>";
 	
 	if (substr($key,0,13) == 'select(html).' || substr($key,0,13) == 'select(text).')
@@ -489,32 +519,37 @@ function hungryfeed_merge_template_callback($matches)
 		);
 		
 	}
-	elseif (substr($key,0,5) == 'data[')
-	{
-		// we are expecting a value in the format data['child']['http://test.com']['somevar']['0']['data']
-		$data = $hungryfeed_merge_template_values['data'];
-		
-		global $HUNGRYFEED_BAD_DATA_CHARS;
-		
-		$safeKey = str_replace($HUNGRYFEED_BAD_DATA_CHARS,'',$key);
-		
-		if ($safeKey == $key)
-		{
-			$varname = '$' . $safeKey;
-			$value = eval("return $varname;");
-		}
-		else
-		{
-			$value = 'data expression contains illegal characters';
-		}
+	
+	return $value;
+}
 
+/**
+ * process the "data" tags
+ * @param array $matches
+ */
+function hungryfeed_merge_data_template_callback($matches)
+{
+	global $hungryfeed_merge_template_values;
+
+	$key = "data" . $matches[1];
+
+	// we are expecting a value in the format data['child']['http://test.com']['somevar']['0']['data']
+	$data = $hungryfeed_merge_template_values['data'];
+
+	global $HUNGRYFEED_BAD_DATA_CHARS;
+
+	$safeKey = str_replace($HUNGRYFEED_BAD_DATA_CHARS,'',$key);
+
+	if ($safeKey == $key)
+	{
+		$varname = '$' . $safeKey;
+		$value = eval("return $varname;");
 	}
 	else
 	{
-		// this is a simple replacement
-		$value = $hungryfeed_merge_template_values[$key];
+		$value = 'data expression contains illegal characters';
 	}
-	
+
 	return $value;
 }
 
