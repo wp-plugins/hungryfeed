@@ -184,7 +184,8 @@ hungryfeed_include_simplepie()
 		<p>Placeholder values
 		available within the template are: {{id}}, {{index}}, {{category}}, {{permalink}}, {{title}}, {{description}}, 
 		{{author}}, {{post_date}}, {{source_title}}, {{source_permalink}}, {{latitude}}, {{longitude}}, {{enclosure}},
-		{{feed_title}}, {{feed_description}}.
+		{{feed_title}}, {{feed_description}}.  Additionally any parameter that is included in the shortcode is available,
+		for example [hungryfeed param1="value1"] will be available in the template as {{param1}}.
 		So that conditional logic can be applied to each item {{index_#}} is set to true where # is the 
 		item number for example {{index_1}}, {{index_2}}.</p>
 		
