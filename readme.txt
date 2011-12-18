@@ -94,9 +94,12 @@ Documentation is available on the plugin homepage at http://wordpress.org/tags/h
 == Upgrade Notice ==
 
 = 1.5.8 =
-* parameters in shortcodes are passed through to the templates
+* shortcode parameters are passed through to the templates
 
 == Changelog ==
+
+= 1.5.8 =
+* parameters in shortcodes are passed through to the templates
 
 = 1.5.7 =
 * templates now use Mustache template engine
