@@ -3,13 +3,13 @@
 Plugin Name: HungryFEED
 Plugin URI: http://verysimple.com/products/hungryfeed/
 Description: HungryFEED displays RSS feeds on a page or post using Shortcodes.	Respect!
-Version: 1.5.8
+Version: 1.5.9
 Author: VerySimple
 Author URI: http://verysimple.com/
 License: GPL2
 */
 
-define('HUNGRYFEED_VERSION','1.5.8');
+define('HUNGRYFEED_VERSION','1.5.9');
 define('HUNGRYFEED_DEFAULT_CACHE_DURATION',3600);
 define('HUNGRYFEED_DEFAULT_CSS',"h3.hungryfeed_feed_title {}\np.hungryfeed_feed_description {}\ndiv.hungryfeed_items {}\ndiv.hungryfeed_item {margin-bottom: 10px;}\ndiv.hungryfeed_item_title {font-weight: bold;}\ndiv.hungryfeed_item_description {}\ndiv.hungryfeed_item_author {}\ndiv.hungryfeed_item_date {}");
 define('HUNGRYFEED_DEFAULT_JS',"<script type=\"text/javascript\">\n// Custom Javascript here...\n</script>");
@@ -479,8 +479,13 @@ function hungryfeed_merge_template($template, $values)
 	
 	// mustache handles the rest
 	include_once(plugin_dir_path(__FILE__).'libs/Mustache.php');
-	$m = new Mustache();
-	$result = $m->render($template,$values);
+	
+	// we have to pass in this PRAGMA option so that html is not escaped
+	// @TODO this is marked in Mustache as experimental. optionally use html_entity_decode instead
+	$options = array( 'pragmas'=> array(Mustache::PRAGMA_UNESCAPED=>true) );
+	
+	$m = new Mustache( $template, $values, null, $options);
+	$result = $m->render();
 	
 	if (get_option('hungryfeed_enable_template_shortcodes',HUNGRYFEED_DEFAULT_ENABLE_TEMPLATE_SHORTCODES))
 	{

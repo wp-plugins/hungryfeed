@@ -179,7 +179,8 @@ hungryfeed_include_simplepie()
 		<p>Custom Templates can be used by specifying a template id in the HungryFEED shortcode.  For example [hungryfeed template="1"]
 		The template feature allows you to customize the layout of the feed items as they appear on the page.
 		Templates are processed using the <a href="http://mustache.github.com/">Mustache</a> template engine so you can use
-		any valid Mustache placeholder or conditional tag.</p> 
+		any valid Mustache placeholder or conditional tag.  The default Mustache HTML escaping behavior has
+		been reversed, so if you would like HTML to be escaped, use triple curly braces {{{likethis}}}.</p> 
 		
 		<p>Placeholder values
 		available within the template are: {{id}}, {{index}}, {{category}}, {{permalink}}, {{title}}, {{description}}, 
