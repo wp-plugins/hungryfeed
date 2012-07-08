@@ -3,7 +3,7 @@ Contributors: verysimple
 Donate link: http://verysimple.com/products/hungryfeed/
 Tags: inline,embed,rss,feed,reader,feed reader,page,rss import,rss include,simplepie,inline rss,rss feed,feed reader,rss reader,inline feed reader,embed feed,inline rss feed
 Requires at least: 2.8
-Tested up to: 3.2.1
+Tested up to: 3.4.1
 Stable tag: trunk
 
 HungryFEED embeds and displays RSS feeds inline on your pages, posts or sidebar using Shortcodes.
@@ -68,11 +68,17 @@ The verysimple feed is used as the default value if no URL is provided, or WordP
 
 = 3. I'm getting the error that wp-content/cache/ does not exist or is not writeable, what is wrong? =
 
-In order to use caching, you must have a folder in wp-content called "cache" which is writable by the web server.  
-If you are not able to do this, you can optionally go to Settings->HungryFEED and set the Cache Duration to 0.  
-It is strongly recommended that you do have this directory to enable caching, though, otherwise your site will make an 
-HTTP request to the RSS content provider every time any visitor views it.  This makes your site slower because it 
-has to retrive the RSS content every time.  It could also be considered bad etiquette to continually hit your 
+In order to use caching, you must have a folder in wp-content called "cache" which is writable by the web server.
+
+To do this, first reate an empty folder in /wp-content/ called "cache" if it does not already exist.
+Next set permissions of /wp-content/cache/ to 755 or 777 (as necessary on your particular server).
+Finally, open /wp.config.php and insert the following code anywhere below existing definitions:
+define('ENABLE_CACHE', TRUE);
+
+If you are not able to do create this folder, you can optionally go to Settings->HungryFEED and set the Cache Duration to 0.
+However, it is strongly recommended that you do have this directory to enable caching because otherwise Wordpress will make a
+new request to the RSS content provider every time any visitor views your page.  This makes your site slower because it
+has to retrive the RSS content every time.  It could also be considered bad etiquette to continually hit your
 content provider's feed.
 
 = 4. How do I put double quotes into a feed url? =
@@ -93,10 +99,13 @@ Documentation is available on the plugin homepage at http://wordpress.org/tags/h
 
 == Upgrade Notice ==
 
-= 1.5.9 =
-* fixed bug where templates containing html are htmlescaped
+= 1.6.0 =
+* supress notice on systems when rss feed has no source
 
 == Changelog ==
+
+= 1.6.0 =
+* supress notice on systems when rss feed has no source
 
 = 1.5.9 =
 * fixed bug where templates containing html are htmlescaped

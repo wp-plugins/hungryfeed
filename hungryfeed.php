@@ -3,13 +3,13 @@
 Plugin Name: HungryFEED
 Plugin URI: http://verysimple.com/products/hungryfeed/
 Description: HungryFEED displays RSS feeds on a page or post using Shortcodes.	Respect!
-Version: 1.5.9
+Version: 1.6.0
 Author: VerySimple
 Author URI: http://verysimple.com/
 License: GPL2
 */
 
-define('HUNGRYFEED_VERSION','1.5.9');
+define('HUNGRYFEED_VERSION','1.6.0');
 define('HUNGRYFEED_DEFAULT_CACHE_DURATION',3600);
 define('HUNGRYFEED_DEFAULT_CSS',"h3.hungryfeed_feed_title {}\np.hungryfeed_feed_description {}\ndiv.hungryfeed_items {}\ndiv.hungryfeed_item {margin-bottom: 10px;}\ndiv.hungryfeed_item_title {font-weight: bold;}\ndiv.hungryfeed_item_description {}\ndiv.hungryfeed_item_author {}\ndiv.hungryfeed_item_date {}");
 define('HUNGRYFEED_DEFAULT_JS',"<script type=\"text/javascript\">\n// Custom Javascript here...\n</script>");
@@ -39,10 +39,10 @@ add_filter('query_vars', 'hungryfeed_queryvars' );
 if (get_option('hungryfeed_enable_widget_shortcodes',HUNGRYFEED_DEFAULT_ENABLE_WIDGET_SHORTCODES))
 {
 	// saw this recommended but is it still necessary in current versions?
-	// if (function_exists('shortcode_unautop')) add_filter('widget_text', 'shortcode_unautop'); 
-	
+	// if (function_exists('shortcode_unautop')) add_filter('widget_text', 'shortcode_unautop');
+
 	add_filter('widget_text', 'do_shortcode' );  // tell wordpress to look for shortcodes in widget text
-	
+
 	/* these probably should never be enabled, perhaps in the case of a private site...? */
 	//add_filter( 'comment_text', 'shortcode_unautop');
 	//add_filter( 'comment_text', 'do_shortcode' );
@@ -58,13 +58,13 @@ add_action('init', 'hungryfeed_init');
  * Fired on initialization.  Allows initialization to occur after page render.
  * Currently this is used only to register the MCE editor button
  */
-function hungryfeed_init() 
+function hungryfeed_init()
 {
 
 	// register the MCE editor plugin if necessary
 	if ( current_user_can('edit_posts') || current_user_can('edit_pages') )
 	{
-		if ( get_user_option('rich_editing') == 'true' && get_option('hungryfeed_enable_editor_button',HUNGRYFEED_DEFAULT_ENABLE_EDITOR_BUTTON)) 
+		if ( get_user_option('rich_editing') == 'true' && get_option('hungryfeed_enable_editor_button',HUNGRYFEED_DEFAULT_ENABLE_EDITOR_BUTTON))
 		{
 			add_filter("mce_external_plugins", "hungryfeed_register_mce_plugin");
 			add_filter('mce_buttons', 'hungryfeed_register_mce_buttons');
@@ -77,7 +77,7 @@ function hungryfeed_init()
  * @param array $plugin_array
  * @return array
  */
-function hungryfeed_register_mce_plugin($plugin_array) 
+function hungryfeed_register_mce_plugin($plugin_array)
 {
 	$plugin_array['hungryfeed'] = plugins_url('/hungryfeed/scripts/editor_plugin.js');
 	return $plugin_array;
@@ -88,7 +88,7 @@ function hungryfeed_register_mce_plugin($plugin_array)
  * @param array $buttons
  * @return array
  */
-function hungryfeed_register_mce_buttons($buttons) 
+function hungryfeed_register_mce_buttons($buttons)
 {
 	array_push($buttons, "hungryfeedButton");
 	return $buttons;
@@ -102,7 +102,7 @@ function hungryfeed_display_rss($params)
 {
 	// if simplepie isn't installed then we can't continue
 	if (!hungryfeed_include_simplepie()) return "";
-	
+
 	// read in all the possible shortcode parameters
 	$url = hungryfeed_val($params,'url','http://verysimple.com/feed/');
 	$force_feed = hungryfeed_val($params,'force_feed','0');
@@ -120,32 +120,32 @@ function hungryfeed_display_rss($params)
 	$page_size = hungryfeed_val($params,'page_size',0);
 	$order = hungryfeed_val($params,'order','');
 	$truncate_description = hungryfeed_val($params,'truncate_description',0);
-	
+
 	$feed_fields = explode(",", hungryfeed_val($params,'feed_fields',HUNGRYFEED_DEFAULT_FEED_FIELDS));
 	$item_fields = explode(",", hungryfeed_val($params,'item_fields',HUNGRYFEED_DEFAULT_ITEM_FIELDS));
 	$link_item_title = hungryfeed_val($params,'link_item_title',HUNGRYFEED_DEFAULT_LINK_ITEM_TITLE);
-	
-	
+
+
 	// fix weirdness in the url due to the wordpress visual editor
 	if ($decode_url) $url = html_entity_decode($url);
-	
+
 	// the target code for any links in the feed
 	$target_code = ($link_target) ? "target='$link_target'" : "";
-	
+
 	// buffer the output.
 	ob_start();
-	
+
 	// output the custom css and javascript
 	echo "<style>\n" .  get_option('hungryfeed_css',HUNGRYFEED_DEFAULT_CSS) . "\n</style>\n";
 	echo get_option('hungryfeed_js',HUNGRYFEED_DEFAULT_JS) . "\n";
-	
+
 	// catch any errors that simplepie throws
 	set_error_handler('hungryfeed_handle_rss_error');
 	$feed = new SimplePie();
-	
+
 	// instruct simplepie not to bother sorting for certain sort types
 	if ($order == "none" || $order == "random") $feed->enable_order_by_date(false);
-	
+
 	$cache_duration = get_option('hungryfeed_cache_duration',HUNGRYFEED_DEFAULT_CACHE_DURATION);
 	if ($cache_duration)
 	{
@@ -157,58 +157,58 @@ function hungryfeed_display_rss($params)
 	{
 		$feed->enable_cache(false);
 	}
-	
+
 	$feed->set_feed_url($url);
-	
+
 	// @HACK: SimplePie adds this weird shit into eBay feeds
 	$feed->feed_url = str_replace("%23038;","",$feed->feed_url);
-	
+
 	if ($force_feed) $feed->force_feed(true);
-	
+
 	if (!$feed->init())
-	{	
+	{
 		hungryfeed_fatal("SimplePie reported: " . $feed->error,"HungryFEED can't get feed.  Don't be mad at HungryFEED.");
-		
+
 		if ($xml_dump)
 		{
 			// this will cause messed up output since simplepie outputs xml headers
 			// but there seems to be no other way to get the raw xml back out for debuggin
-			
+
 			echo "\n\n\n<!-- BEGIN DEBUG OUTPUT FROM FEED at $feed->feed_url -->\n\n\n";
-			
+
 			$feed->xml_dump = true;
 			$feed->init();
-			
+
 			echo "\n\n\n<!-- END DEBUG OUTPUT FROM FEED -->\n\n\n";
-			
+
 		}
 
 		$buffer = ob_get_clean();
 		return $buffer;
 	}
-	
+
 	// restore the normal wordpress error handling
 	restore_error_handler();
-	
+
 	if (in_array("title",$feed_fields)) echo '<h3 class="hungryfeed_feed_title">' . $feed->get_title() . "</h3>\n";
 	if (in_array("description",$feed_fields)) echo '<p class="hungryfeed_feed_description">' . $feed->get_description() . "</p>\n";
-	
+
 	echo "<div class=\"hungryfeed_items\">\n";
-	
+
 	$counter = 0;
 	$template_html = "";
-	
+
 	if ($template_id == "1" || $template_id == "2" || $template_id == "3")
 	{
 		$template_html = get_option('hungryfeed_html_'.$template_id,HUNGRYFEED_DEFAULT_HTML);
 	}
-	
-	$allowed_tags = $allowed_tags 
-		? ('<' . implode('><',explode(",",$allowed_tags)) . '>') 
+
+	$allowed_tags = $allowed_tags
+		? ('<' . implode('><',explode(",",$allowed_tags)) . '>')
 		: '';
-	
+
 	$items = $feed->get_items();
-	
+
 	if ($order == "reverse")
 	{
 		$items = array_reverse($items);
@@ -217,10 +217,10 @@ function hungryfeed_display_rss($params)
 	{
 		shuffle($items);
 	}
-	
+
 	$pages = array();
 	$page_num = 1;
-	
+
 	if ($page_size)
 	{
 		// array chunk used for pagination
@@ -236,87 +236,87 @@ function hungryfeed_display_rss($params)
 		$pages[] = $items;
 		$page_num = 1;
 	}
-	
+
 	$num_pages = count($pages);
-	
+
 	// filters is a pip-delimited value
 	$filters = $filter ? explode("|",$filter) : array();
 	$filters_out = $filter_out ? explode("|",$filter_out) : array();
-	
+
 	$item_index = ($page_num-1) * $page_size;
-	
+
 	foreach ($pages[$page_num-1] as $item)
 	{
 		// flatten the author into a string
 		$author = $item->get_author();
 		$author_name = ($author ? $author->get_name() : '');
-				
+
 		$title = $item->get_title();
 		$description = $item->get_description();
-		
+
 			// if any filters were specified, then only show the feed items that contain the filter text
 		if (count($filters))
-		{	
+		{
 			$match = false;
 			$item_will_be_included = false;
-			
+
 			foreach($filters as $f)
-			{	
+			{
 				if (stripos($description,$f) !== false || stripos($title,$f) !== false)
 				{
 					$match = true;
 					break;
 				}
 			}
-			
+
 			if (!$match)
 			{
 				// didn't match the filter, exit the foreach loop
 				continue;
 			}
 		}
-		
-		
+
+
 		// if any filters were specified, then only show the feed items that contain the filter text
 		if (count($filters_out))
-		{	
+		{
 			$match = false;
 			foreach($filters_out as $fo)
-			{	
+			{
 				if (stripos($description,$fo) !== false || stripos($title,$fo) !== false)
 				{
 					$match = true;
 					break;
 				}
 			}
-			
+
 			if ($match)
 			{
 				// did match the filter_out, exit the foreach loop
 				continue;
 			}
 		}
-		
+
 		// if we made it this far then the item will be included in the output
 		$counter++;
-		
+
 		if ($allowed_tags) $description = strip_tags($description,$allowed_tags);
-		
+
 		if ($truncate_description) $description = hungryfeed_truncate($description,$truncate_description, array('ending' => '...', 'exact' => true, 'html' => true) );
-		
+
 		if ($strip_ellipsis) $description = str_replace(array('[...]','...'),array('',''),$description);
 
 		if ($target_code) $description = str_replace('<a ','<a '.$target_code.' ',$description);
-		
+
 		if ($max_items > 0 && $counter > $max_items) break;
-				
+
 			// either use a template, or the default layout
 		if ($template_html)
 		{
 			// flatten these
 			$enclosure = $item->get_enclosure();
 			$enclosure_link = $enclosure ? $enclosure->get_link() : "";
-			
+
 			$category_label = "";
 			$cdelim = "";
 			$categories = $item->get_categories();
@@ -328,22 +328,23 @@ function hungryfeed_display_rss($params)
 					$cdelim = ", ";
 				}
 			}
-			
+
 			$source = $item->get_source();
 			$source_title = $source ? $source->get_title() : "";
 			$source_permalink = $source ? $source->get_permalink() : "";
-			
+
 			// for some reason simplepie doesn't always get the source
 			if (!$source)
 			{
 				try	{
-					$source_title = $item->data['child']['']['source'][0]['data'];
-					$source_permalink = $item->data['child']['']['source'][0]['attribs']['url'];
+					// TODO: why doens't try/catch suppress notice here?
+					$source_title = @$item->data['child']['']['source'][0]['data'];
+					$source_permalink = @$item->data['child']['']['source'][0]['attribs']['url'];
 				} catch (Exception $ex) {}
 			}
-				
+
 			$item_index++;
-			
+
 			$item_values = array(
 				'index' => $item_index,
 				'index_'. $item_index => true,
@@ -363,50 +364,50 @@ function hungryfeed_display_rss($params)
 				'enclosure' => $enclosure_link,
 				'data' => $item->data
 			);
-			
+
 			// allow pass-through variables from the shortcode
 			$rss_values = array_merge($params,$item_values);
-			
-			
+
+
 			echo hungryfeed_merge_template($template_html,$rss_values);
 		}
 		else
-		{			
+		{
 			echo "<div class=\"hungryfeed_item\">\n";
-				if (in_array("title",$item_fields)) 
-					echo $link_item_title 
+				if (in_array("title",$item_fields))
+					echo $link_item_title
 						? '<div class="hungryfeed_item_title"><a href="' . $item->get_permalink() . '" '. $target_code .'>' . $title . "</a></div>\n"
 						: '<div class="hungryfeed_item_title">' . $title . '</div>';
-				if (in_array("description",$item_fields)) 
+				if (in_array("description",$item_fields))
 					echo '<div class="hungryfeed_item_description">' . $description . "</div>\n";
-				if ($author_name && in_array("author",$item_fields)) 
+				if ($author_name && in_array("author",$item_fields))
 					echo '<div class="hungryfeed_item_author">Author: ' . $author_name . "</div>\n";
-				if ($item->get_date() && in_array("date",$item_fields)) 
+				if ($item->get_date() && in_array("date",$item_fields))
 					echo '<div class="hungryfeed_item_date">Posted: ' . $item->get_date($date_format) . "</div>\n";
 			echo "</div>\n";
 		}
 
-		if ($show_data) 
+		if ($show_data)
 		{
-			echo "<div class='hungryfeed_item_data'><textarea style='width: 400px; height: 100px;'>" 
-				. (print_r($item->data,1)) 
+			echo "<div class='hungryfeed_item_data'><textarea style='width: 400px; height: 100px;'>"
+				. (print_r($item->data,1))
 				. "</textarea></div>";
 		}
 	}
-	
+
 	echo "</div>\n";
 
-	
+
 	if ($page_size)
 	{
 		echo "<p class=\"hungryfeed_pagenav\"><span>Viewing page $page_num of $num_pages</span>";
-		
+
 		if ($page_num > 1) echo "<span>|</span><span><a href=\"". hungryfeed_create_url(array("hf_page" => $page_num - 1)) . "\">Previous Page</a></span>";
 		if ($page_num < $num_pages) echo "<span>|<span><a href=\"". hungryfeed_create_url(array("hf_page" => $page_num + 1)) . "\">Next Page</a></span>";
-		
+
 		echo "</p>";
 	}
-	
+
 	// flush the buffer and return
 	$buffer = ob_get_clean();
 	return $buffer;
@@ -427,7 +428,7 @@ function hungryfeed_parse_dom_query($html, $selector, $method = "text", $attr = 
 {
 	// only include phpQuery if selectors are used so it isn't unecessarily loaded
 	include_once(plugin_dir_path(__FILE__).'libs/phpQuery-onefile.php');
-	
+
 	global $hungryfeed_merge_template_documents;
 
 	// cache this because it is expensive and we may have multiple selectors for one template
@@ -435,10 +436,10 @@ function hungryfeed_parse_dom_query($html, $selector, $method = "text", $attr = 
 	{
 		$hungryfeed_merge_template_documents[$html] = phpQuery::newDocument($html);
 	}
-	
+
 	$pq = $hungryfeed_merge_template_documents[$html];
 	$result = phpQuery::pq($selector, $pq->documentID);
-	
+
 	switch ($method)
 	{
 		case "html":
@@ -451,9 +452,9 @@ function hungryfeed_parse_dom_query($html, $selector, $method = "text", $attr = 
 			$output = $result->attr($attr);
 			break;
 	}
-	
+
 	// phpQuery::unloadDocuments();
-	
+
 	return $output;
 }
 
@@ -470,30 +471,30 @@ function hungryfeed_merge_template($template, $values)
 	// first look for any of the select or data tags
 	global $hungryfeed_merge_template_values;
 	$hungryfeed_merge_template_values = $values;
-	
+
 	// this regex looks for "select" tags
 	$template = preg_replace_callback('!{{select(([^}])+)}}!', 'hungryfeed_merge_select_template_callback', $template);
-	
+
 	// this regex looks for "data" tags
 	$template = preg_replace_callback('!{{data(([^}])+)}}!', 'hungryfeed_merge_data_template_callback', $template);
-	
+
 	// mustache handles the rest
 	include_once(plugin_dir_path(__FILE__).'libs/Mustache.php');
-	
+
 	// we have to pass in this PRAGMA option so that html is not escaped
 	// @TODO this is marked in Mustache as experimental. optionally use html_entity_decode instead
 	$options = array( 'pragmas'=> array(Mustache::PRAGMA_UNESCAPED=>true) );
-	
+
 	$m = new Mustache( $template, $values, null, $options);
 	$result = $m->render();
-	
+
 	if (get_option('hungryfeed_enable_template_shortcodes',HUNGRYFEED_DEFAULT_ENABLE_TEMPLATE_SHORTCODES))
 	{
 		$result = do_shortcode($result);
 	}
-	
+
 	return $result;
-	
+
 }
 
 /**
@@ -503,10 +504,10 @@ function hungryfeed_merge_template($template, $values)
 function hungryfeed_merge_select_template_callback($matches)
 {
 	global $hungryfeed_merge_template_values;
-	
+
 	$key = "select" . $matches[1];
 	// echo "<div>called for ".$key."<div/>";
-	
+
 	if (substr($key,0,13) == 'select(html).' || substr($key,0,13) == 'select(text).')
 	{
 		// this is a dom query of the description field
@@ -517,18 +518,18 @@ function hungryfeed_merge_select_template_callback($matches)
 		);
 	}
 	elseif (substr($key,0,12) == 'select(attr:')
-	{	
+	{
 		$endpos = strpos($key,")");
-		
+
 		$value = hungryfeed_parse_dom_query(
 			$hungryfeed_merge_template_values['description'],
 			substr($key,$endpos+2),
 			"attr",
 			substr($key,12,$endpos-12)
 		);
-		
+
 	}
-	
+
 	return $value;
 }
 
@@ -564,9 +565,9 @@ function hungryfeed_merge_data_template_callback($matches)
 
 /**
  * registration for queryvars used by hungryfeed.  this registers any
- * querystring variables that hungryfeed requires so that wordpress will 
+ * querystring variables that hungryfeed requires so that wordpress will
  * process them
- * 
+ *
  * @param array original array of allowed wordpress query vars
  * @return array $qvars with extra allowed vars added to the array
  */
