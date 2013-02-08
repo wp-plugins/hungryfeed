@@ -99,11 +99,13 @@ Documentation is available on the plugin homepage at http://wordpress.org/tags/h
 
 == Upgrade Notice ==
 
-= 1.6.1 =
-* better error reporting when cache directory doens't exist
-* added codes to pass brackets or quotes in a short code #91; #93; and #34;
+= 1.6.2 =
+* attempt to create cache directory if it doesn't exist
 
 == Changelog ==
+
+= 1.6.2 =
+* attempt to create cache directory if it doesn't exist
 
 = 1.6.1 =
 * better error reporting when cache directory doens't exist
