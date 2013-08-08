@@ -3,7 +3,7 @@
 <head>
 	<title>{#hungryfeed.title}</title>
 	<script type="text/javascript" src="../../../../wp-includes/js/tinymce/tiny_mce_popup.js"></script>
-	<script type="text/javascript" src="editor_dialog.js"></script>
+	<script type="text/javascript" src="editor_dialog.js?v=2"></script>
 	<style>
 		.frmBody {height:290px; overflow: auto;}
 		.frmRow {margin-top: 8px;}
@@ -38,10 +38,11 @@
 			</p>
 			
 			<p>Item Fields: 
-				<input id="item_fields_title" name="item_fields" type="checkbox" class="text" value="title" checked="checked" /> Title
-				<input id="item_fields_description" name="item_fields" type="checkbox" class="text" value="description" checked="checked" /> Description
-				<input id="item_fields_author" name="item_fields" type="checkbox" class="text" value="author" checked="checked" /> Author
-				<input id="item_fields_date" name="item_fields" type="checkbox" class="text" value="date" checked="checked" /> Date
+				<input id="item_fields_title" name="item_fields_title" type="checkbox" class="text" value="include" checked="checked" /> Title
+				<input id="item_fields_description" name="item_fields_description" type="checkbox" class="text" value="include" checked="checked" /> Description
+				<input id="item_fields_content" name="item_fields_content" type="checkbox" class="text" value="include" /> Content
+				<input id="item_fields_author" name="item_fields_author" type="checkbox" class="text" value="include" checked="checked" /> Author
+				<input id="item_fields_date" name="item_fields_date" type="checkbox" class="text" value="include" checked="checked" /> Date
 			</p>
 		</fieldset>
 		

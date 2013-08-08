@@ -3,7 +3,7 @@ Contributors: verysimple
 Donate link: http://verysimple.com/products/hungryfeed/
 Tags: inline,embed,rss,feed,reader,feed reader,page,rss import,rss include,simplepie,inline rss,rss feed,feed reader,rss reader,inline feed reader,embed feed,inline rss feed
 Requires at least: 2.8
-Tested up to: 3.4.1
+Tested up to: 3.6
 Stable tag: trunk
 
 HungryFEED embeds and displays RSS feeds inline on your pages, posts or sidebar using Shortcodes.
@@ -56,13 +56,13 @@ HungryFEED is a plugin that includes an RSS feed within the content of a page or
 
 = 1. The main title and/or description of the feed is displaying, how can I hide that? =
 
-To hide the feed title you can use the feed_items parameter to specify which feed fields you wish to appear like so: feed_items=""
+To hide the feed title you can use the feed_items parameter to specify which feed fields you wish to appear like so: feed_items="".  You can use the HungryFEED editor button to help build your shortcode using a GUI.
 
 = 2. I keep getting the verysimple.com feed instead of my own, what's the problem? =
 
 The verysimple feed is used as the default value if no URL is provided, or WordPress can't read the URL parameter due to either a syntax error in the shortcode, or a special character in the feed url.  Here are some known causes:
 
-* Using curly quotes instead of straight quotes (ie � vs  ")  See http://en.wikipedia.org/wiki/Quotation_mark_glyphs
+* Using curly quotes instead of straight quotes (ie ” vs  ")  See http://en.wikipedia.org/wiki/Quotation_mark_glyphs
 * Certain special characters in the feed url must be url encoded.  Here are some known characters and their replacement:  "=%22 [=%5B  ]=%5D  (see http://www.w3schools.com/tags/ref_urlencode.asp)
 * Copy/pasting the URL into the shortcode will sometimes create HTML instead of plain text.  Use the WordPress editor's HTML View to view the raw HTML source code of your post and make sure the URL parameter is plain text and not HTML code
 
@@ -99,10 +99,13 @@ Documentation is available on the plugin homepage at http://wordpress.org/tags/h
 
 == Upgrade Notice ==
 
-= 1.6.2 =
-* attempt to create cache directory if it doesn't exist
+= 1.6.3 =
+* add support for "content" in item fields and templates for feeds that include full post contents
 
 == Changelog ==
+
+= 1.6.3 =
+* add support for "content" in item fields and templates for feeds that include full post contents
 
 = 1.6.2 =
 * attempt to create cache directory if it doesn't exist

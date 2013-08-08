@@ -39,6 +39,7 @@ var HungryFeedDialog = {
 
 		var item_fields = f.item_fields_title.checked ? 'title,' : '';
 		item_fields += f.item_fields_description.checked ? 'description,' : '';
+		item_fields += f.item_fields_content.checked ? 'content,' : '';
 		item_fields += f.item_fields_author.checked ? 'author,' : '';
 		item_fields += f.item_fields_date.checked ? 'date,' : '';
 		if (item_fields != '') item_fields = item_fields.slice(0, -1);

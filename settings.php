@@ -183,7 +183,7 @@ hungryfeed_include_simplepie()
 		been reversed, so if you would like HTML to be escaped, use triple curly braces {{{likethis}}}.</p> 
 		
 		<p>Placeholder values
-		available within the template are: {{id}}, {{index}}, {{category}}, {{permalink}}, {{title}}, {{description}}, 
+		available within the template are: {{id}}, {{index}}, {{category}}, {{permalink}}, {{title}}, {{description}}, {{content}}, 
 		{{author}}, {{post_date}}, {{source_title}}, {{source_permalink}}, {{latitude}}, {{longitude}}, {{enclosure}},
 		{{feed_title}}, {{feed_description}}.  Additionally any parameter that is included in the shortcode is available,
 		for example [hungryfeed param1="value1"] will be available in the template as {{param1}}.

@@ -3,15 +3,15 @@
 Plugin Name: HungryFEED
 Plugin URI: http://verysimple.com/products/hungryfeed/
 Description: HungryFEED displays RSS feeds on a page or post using Shortcodes.	Respect!
-Version: 1.6.2
+Version: 1.6.3
 Author: VerySimple
 Author URI: http://verysimple.com/
 License: GPL2
 */
 
-define('HUNGRYFEED_VERSION','1.6.2');
+define('HUNGRYFEED_VERSION','1.6.3');
 define('HUNGRYFEED_DEFAULT_CACHE_DURATION',3600);
-define('HUNGRYFEED_DEFAULT_CSS',"h3.hungryfeed_feed_title {}\np.hungryfeed_feed_description {}\ndiv.hungryfeed_items {}\ndiv.hungryfeed_item {margin-bottom: 10px;}\ndiv.hungryfeed_item_title {font-weight: bold;}\ndiv.hungryfeed_item_description {}\ndiv.hungryfeed_item_author {}\ndiv.hungryfeed_item_date {}");
+define('HUNGRYFEED_DEFAULT_CSS',"h3.hungryfeed_feed_title {}\ndiv.hungryfeed_feed_description {}\ndiv.hungryfeed_feed_content {}\ndiv.hungryfeed_items {}\ndiv.hungryfeed_item {margin-bottom: 10px;}\ndiv.hungryfeed_item_title {font-weight: bold;}\ndiv.hungryfeed_item_description {}\ndiv.hungryfeed_item_author {}\ndiv.hungryfeed_item_date {}");
 define('HUNGRYFEED_DEFAULT_JS',"<script type=\"text/javascript\">\n// Custom Javascript here...\n</script>");
 define('HUNGRYFEED_DEFAULT_HTML',"<div class=\"hungryfeed_item\">\n<h3><a href=\"{{permalink}}\">{{title}}</a></h3>\n<div>{{description}}</div>\n<div>Author: {{author}}</div>\n<div>Posted: {{post_date}}</div>\n</div>");
 define('HUNGRYFEED_DEFAULT_ERROR_TEMPLATE',"<div style=\"margin:5px 0px 5px 0px;padding:10px;border: solid 1px red; background-color: #ff6666; color: black;\">\n{{error}}\n</div>");
@@ -283,6 +283,7 @@ function hungryfeed_display_rss($params)
 
 		$title = $item->get_title();
 		$description = $item->get_description();
+		$content = method_exists( $item,'get_content') ? $item->get_content() : $description;
 
 			// if any filters were specified, then only show the feed items that contain the filter text
 		if (count($filters))
@@ -330,7 +331,10 @@ function hungryfeed_display_rss($params)
 		// if we made it this far then the item will be included in the output
 		$counter++;
 
-		if ($allowed_tags) $description = strip_tags($description,$allowed_tags);
+		if ($allowed_tags) {
+			$description = strip_tags($description,$allowed_tags);
+			$content = strip_tags($content,$allowed_tags);
+		}
 
 		if ($truncate_description) $description = hungryfeed_truncate($description,$truncate_description, array('ending' => '...', 'exact' => true, 'html' => true) );
 
@@ -384,6 +388,7 @@ function hungryfeed_display_rss($params)
 				'permalink' => $item->get_permalink(),
 				'title' => $title,
 				'description' => $description,
+				'content' => $content,
 				'author' => $author_name,
 				'post_date' => $item->get_date($date_format),
 				'source_title' => $source_title,
@@ -410,6 +415,8 @@ function hungryfeed_display_rss($params)
 						: '<div class="hungryfeed_item_title">' . $title . '</div>';
 				if (in_array("description",$item_fields))
 					echo '<div class="hungryfeed_item_description">' . $description . "</div>\n";
+				if (in_array("content",$item_fields))
+					echo '<div class="hungryfeed_item_content">' . $content . "</div>\n";
 				if ($author_name && in_array("author",$item_fields))
 					echo '<div class="hungryfeed_item_author">Author: ' . $author_name . "</div>\n";
 				if ($item->get_date() && in_array("date",$item_fields))
